@@ -30,6 +30,9 @@ export class TabMenuComponent implements OnInit, OnDestroy {
 		private router: Router,
 	){}
 
+	/**
+	 * target router-link when tab-item is clicked 
+	 */
 	ngOnInit() {
 		this.items = [
 			{ 
@@ -58,8 +61,7 @@ export class TabMenuComponent implements OnInit, OnDestroy {
 			}
 		];
 
-		// temporal trick.. :'(
-		// for sync between active-tab and routed component
+		// for synchronizing between active-tab and routed component
 		this.intervalId = setInterval(() => {
 			if (this.router.url == "/browse")
 				this.activeItem = this.items[0] 
@@ -70,8 +72,10 @@ export class TabMenuComponent implements OnInit, OnDestroy {
 		}, 300)
 	}
 
+	/**
+	 * clear intervalId that was used for synchronizing
+	 */
 	ngOnDestroy(): void {
 		clearInterval(this.intervalId);
 	}
-
 }
