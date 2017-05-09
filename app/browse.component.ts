@@ -101,7 +101,7 @@ export class BrowseComponent implements OnInit, OnDestroy {
 					this.pages.push(i + 1 + ((this.chunkNum-1) * this.fetchPageNum));
 				}
 
-				// will be removed
+				// use this flag to make columns only when we get the first chunk
 				if (!this.firstFetched) this.firstFetched = true;
 
 				this.isLoading = false;

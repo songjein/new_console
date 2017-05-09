@@ -32,9 +32,6 @@ export class ProxyComponent implements OnInit {
 				return target;
 			} )
 			.subscribe(target =>  {
-				// why looping..?
-				// ex) browser => b, r, o, w, e, r => error
-				// so, call router navigate in switchMap :'(
 			}) 
 	}
 }
