@@ -1,0 +1,70 @@
+<h2>
+{{globals.selectedDataset}}
+</h2>
+
+<h1 *ngIf="!data && globals.selectedDataset">
+	Loading...
+</h1>
+
+<h1 *ngIf="!globals.selectedDataverse">
+	Empty Result, please select dataverse
+</h1>
+
+<h1 *ngIf="!globals.selectedDataset">
+	Please select dataset
+</h1>
+
+<div class="pagination">
+	<div class="page-label" *ngIf="chunkNum > 1" (click)="getPrevChunk()">
+		<i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+	</div>
+	<div class="page" *ngFor="let page of pages" (click)="getPageData(page)">{{page}}</div>
+	<div class="page-label" (click)="getNextChunk()" *ngIf="data">
+		<i class="fa fa-chevron-circle-right" aria-hidden="true"></i>
+	</div>
+	<div class="page-label" *ngIf="isLoading">
+		<i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>
+	</div>
+</div>
+<div style="height:10px; clear:both"></div>
+
+<div id="browse-container">
+	<table>
+		<tr>
+			<th *ngFor="let col of cols" (click)="expandAll(col)">
+				{{ col }}
+			</th>
+		</tr>
+		<tr *ngIf="data && data.length == 0">
+			<td colspan="100">Empty</td>
+		</tr>
+		<template ngFor let-d [ngForOf]="data" let-r="index" >
+			<tr class="row">
+				<td *ngFor="let k of cols; let c=index" (click)="expandCell(r,c)">
+					<!-- nested data-->
+					<span *ngIf="d[k] | isObject">
+						<b>Nested Data</b>
+					</span>
+					<!-- array of nested data-->
+					<span *ngIf="d[k] | isObjectArray">
+						[
+							<span *ngFor="let item of d[k]; let i = index">
+								<span *ngIf="i > 0">,</span>
+								<b>Nested Data</b>
+							</span>
+						]
+					</span>
+					<!-- plain data -->
+					<span *ngIf="!(d[k] | isObject) && !(d[k] | isObjectArray)">
+						{{ d[k] }}
+					</span>
+				</td>
+			</tr>
+			<tr *ngIf="expansions[r]"> 
+				<td [attr.colspan]="100" (click)="expandCell(r,c,true)">
+					<pre [innerHTML]=" expansions[r] | prettyjson:3"></pre>
+				</td>
+			</tr>
+		</template>
+	</table>
+</div>

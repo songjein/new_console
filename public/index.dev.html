@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <title>AsterixDb Web Console</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+		<!-- Global style -->
+    <link rel="stylesheet" href="css/style.css">
+		<!-- Style for Codemirror -->
+		<link rel="stylesheet" href="node_modules/codemirror/lib/codemirror.css" />
+		<!-- Style for primeng & font-awesome -->
+		<link rel="stylesheet" type="text/css" href="node_modules/primeng/resources/themes/omega/theme.css" />
+		<link rel="stylesheet" type="text/css" href="node_modules/primeng/resources/primeng.min.css" />
+		<link rel="stylesheet" type="text/css" href="node_modules/font-awesome/css/font-awesome.min.css" />
+
+		<!-- Script for Codemirror -->
+    <script src="node_modules/codemirror/lib/codemirror.js"></script>
+
+    <!-- Polyfill(s) for older browsers -->
+    <script src="js/vendor/shim.min.js"></script>
+    <script src="js/vendor/zone.min.js"></script>
+    <script src="js/vendor/Reflect.js"></script>
+    <script src="js/vendor/system.js"></script>
+
+    <script src="js/systemjs.config.js"></script>
+    <script>
+      System.import('app').catch(function(err) { console.error(err); });
+    </script>
+
+  </head>
+
+  <!-- Display the application -->
+  <body>
+    <query-console>Loading AsterixDB Web Console...<query-console>
+  </body>
+</html>
