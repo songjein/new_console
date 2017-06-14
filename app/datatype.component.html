@@ -1,16 +1,16 @@
 <h2 *ngIf="data" >
-	{{datatype}} (isOpen:<span style="color:red">{{isOpen}}</span>)
+	{{datatype}} (Open-type:<span style="color:red">{{isOpen}}</span>)
 </h2>
 
 <h1 *ngIf="!data && globals.selectedDataset">
 	Loading...
 </h1>
 
-<h1 *ngIf="!globals.selectedDataverse">
+<h1 *ngIf="!globals.selectedDataverse" class="alert-msg">
 	Empty Result, please select dataverse
 </h1>
 
-<h1 *ngIf="!globals.selectedDataset">
+<h1 *ngIf="!globals.selectedDataset" class="alert-msg">
 	Please select dataset
 </h1>
 

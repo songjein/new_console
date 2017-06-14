@@ -8,15 +8,44 @@ import { Component } from '@angular/core';
 	selector: 'query-console',
 	template: `
 		<navbar></navbar>
-		<div style="width:15%; float:left; padding-top: 50px;">
+		<div id="left-div" >
+			<div id="left-div-label">Dataverse</div>
 			<sidebar></sidebar>
 		</div>
-		<div style="width:80%; float:left; overflow:auto; padding: 10px; ">
+		<div id="right-div">
 			<tab-menu></tab-menu>
 			<div style="height:3px;"></div>
 			<router-outlet></router-outlet>
 		</div>
 	`
+	styles: [`
+		#left-div{
+			max-width:200px; 
+			min-width:150px; 
+			float:left; 
+			padding: 30px 10px;;
+		}
+		#left-div-label{
+			font-weight:bold;
+			font-size:1.3em;
+			margin-bottom:5px;
+		}
+		#right-div{
+			width: 85%; 
+			float:left; 
+			overflow:auto; 
+			padding: 10px; 
+		}
+		
+		@media (max-width: 1000px) {
+			#left-div-label{
+				color:red;
+			}
+			#right-div{
+				width:97%;				
+			}
+		}
+	`]
 })
 
 export class AppComponent {

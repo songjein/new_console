@@ -11,7 +11,7 @@ import { Globals } from './globals';
 	selector: 'navbar',
 	template: `
 		<nav>
-			<a href="/"><img src="/images/asterixdb_tm.png"></a>
+			<a href="/"><img src="queryconsoleui/images/asterixdb_tm.png"></a>
 			<strong  class="current-location">
 				{{globals.selectedDataverse}} 
 				<span *ngIf="globals.selectedDataset"> 

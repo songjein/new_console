@@ -40,6 +40,7 @@ export class SidebarComponent implements OnInit{
 				// parse response body
 				const dv = JSON.parse(res).results;
 				for (var i = 0; i < dv.length; i++){
+					if (dv[i]["DataverseName"] == "Default") continue;
 					this.items.push(
 						{ 
 							label: dv[i]["DataverseName"], 

@@ -13,21 +13,20 @@ export class QueryService {
 
 	constructor (private http: Http) { }
 
+	private headers = new Headers({'Content-Type': 'application/json'});
+
 	/**
 	 * send query to the server 
 	 */
 	sendQuery(query: string): Promise<any> {
-		const apiUrl = '/query/service'; 
+		const apiUrl = '/query/service';
 
 		return this.http
-			.post(apiUrl, {statement: query})
+			.post(apiUrl, JSON.stringify({statement: query}), {headers: this.headers})
 			.toPromise()
 			.then(response => {
-				// when user typed query has error, response._body = "" -> why?
-				// why is there no error message in the response._body?
-				if (response._body == "") 
-					return response._body;
-				return JSON.parse(response._body);
+					// should remove JSON.parse with servlet
+					return JSON.parse(response._body);
 				})
 			.catch(this.handleError);
 	}

@@ -112,7 +112,7 @@ export class BrowseComponent implements OnInit, OnDestroy {
 	 * when click the page number, slice this.allData into this.data
 	 */
 	getPageData(pageNum: number){
-		// move page when the all items are expanded => refresh expanded area
+		// change page when the all items are expanded => refresh expanded area
 		if (this.expanded){
 			this.expandAll(this.lastSelectedColumn, true);	
 		}
