@@ -28,6 +28,11 @@ export class QueryComponent implements OnInit {
 	allData: any[];
 	cols: any[];
 
+	/**
+	 * column filter checkbox
+	 */
+	selectedColumns: string[] = [];
+
 	// query result message
 	execution_time: number;
 	status: string;
@@ -62,6 +67,7 @@ export class QueryComponent implements OnInit {
 		this.cols = [];
 		this.errors = []; 
 		this.pages = [];
+		this.selectedColumns = [];
 		this.status = undefined; 
 		
 		/**
@@ -95,10 +101,16 @@ export class QueryComponent implements OnInit {
 			this.pages.push(i + 1);
 		}
 		
-		// make colums using first row
-		const labels = Object.keys(this.allData[0]);
-		for ( var i = 0; i < labels.length; i ++ ) {
-			this.cols.push(labels[i]);
+		// look up the number/2 of rows data and build columns
+		// make maximum length columns 
+		for (let i = 0 ; i < this.allData.length / 2; i++){
+			const keys = Object.keys(this.allData[i]);
+			for ( var j = 0; j < keys.length; j ++ ) {
+				if (!this.cols.includes(keys[j])) {
+					this.cols.push(keys[j]);
+					this.selectedColumns.push(keys[j]);	
+				}
+			}
 		}
 
 		this.getPageData(1);

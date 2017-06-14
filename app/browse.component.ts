@@ -14,11 +14,11 @@ import { Globals } from './globals';
 	styleUrls: ['browse.component.css']
 })
 
-export class BrowseComponent implements OnInit, OnDestroy {
+export class BrowseComponent implements OnInit {
 
 	/**
 	 * data, cols will be injected to the table 
-	 */
+	 */ 
 	allData: any[];
 	data: any[];
 	cols: any[] = [];
@@ -79,7 +79,7 @@ export class BrowseComponent implements OnInit, OnDestroy {
 				this.allData = records;
 
 				// look up the number/2 of rows data and build columns
-				// make maximum length column 
+				// make maximum length columns
 				if (!this.firstFetched){
 					for (let i = 0 ; i < records.length / 2; i++){
 						const keys = Object.keys(records[i]);	

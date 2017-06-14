@@ -25,17 +25,32 @@
 
 	<div style="height:10px;"></div>
 
+	<!-- column filter -->
+	<div *ngIf="cols && cols.length > 0">
+		<span style="font-weight:bold">Column filter :</span><br>
+		<span *ngFor="let col of cols; let i=index" >
+			<span style="white-space: nowrap;">
+				[<p-checkbox name="columnfilter" value="{{col}}" label="{{col}}" [(ngModel)]="selectedColumns"></p-checkbox>]	
+				<br *ngIf="(i+1)%5 == 0">
+			</span>
+		</span>
+	</div>
+
+	<div style="height:10px;"></div>
+
+	<!-- pagination -->
 	<div class="pagination">
 		<div class="page" *ngFor="let page of pages" (click)="getPageData(page)">{{page}}</div>
 		<div class="page-label" *ngIf="isLoading">
 			<i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>
 		</div>
 	</div>
-
+	
+	<!-- table; query result -->
 	<div id="browse-container">
 		<table>
 			<tr>
-				<th *ngFor="let col of cols" (click)="expandAll(col)">
+				<th *ngFor="let col of selectedColumns" (click)="expandAll(col)">
 					{{ col }}
 				</th>
 			</tr>
@@ -44,7 +59,7 @@
 			</tr>
 			<template ngFor let-d [ngForOf]="data" let-r="index" >
 				<tr class="row">
-					<td *ngFor="let k of cols; let c=index" (click)="expandCell(r,c)">
+					<td *ngFor="let k of selectedColumns; let c=index" (click)="expandCell(r,c)">
 						<!-- nested data-->
 						<span *ngIf="d[k] | isObject">
 							<b>Nested Data</b>
