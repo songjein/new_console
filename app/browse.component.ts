@@ -24,6 +24,11 @@ export class BrowseComponent implements OnInit, OnDestroy {
 	cols: any[] = [];
 
 	/**
+	 * column filter checkbox
+	 */
+	selectedColumns: string[] = [];
+
+	/**
 	 * expansion status
 	 */
 	expansions: any[] = Array(25); // must be the same with the number of rows in a page
@@ -79,7 +84,10 @@ export class BrowseComponent implements OnInit, OnDestroy {
 					for (let i = 0 ; i < records.length / 2; i++){
 						const keys = Object.keys(records[i]);	
 						for (let j = 0 ; j < keys.length; j++){
-							if (!this.cols.includes(keys[j])) this.cols.push(keys[j]);	
+							if (!this.cols.includes(keys[j])) {
+								this.cols.push(keys[j]);	
+								this.selectedColumns.push(keys[j]);	
+							}
 						}
 					}
 				}

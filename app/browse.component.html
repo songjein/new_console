@@ -14,6 +14,18 @@ Dataset: <span style="color:red">{{globals.selectedDataset}}</span>
 	Please select dataset
 </h1>
 
+<!-- column filter -->
+<span style="font-weight:bold">Column filter :</span><br>
+<span *ngFor="let col of cols; let i=index" >
+	<span style="white-space: nowrap;">
+		[<p-checkbox name="columnfilter" value="{{col}}" label="{{col}}" [(ngModel)]="selectedColumns"></p-checkbox>]	
+		<br *ngIf="(i+1)%5 == 0">
+	</span>
+</span>
+
+<div style="height:10px;"></div>
+
+<!-- pagination -->
 <div class="pagination">
 	<div class="page-label" *ngIf="chunkNum > 1" (click)="getPrevChunk()">
 		<i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
@@ -28,10 +40,11 @@ Dataset: <span style="color:red">{{globals.selectedDataset}}</span>
 </div>
 <div style="height:10px; clear:both"></div>
 
+<!-- table -->
 <div id="browse-container">
 	<table>
 		<tr>
-			<th *ngFor="let col of cols" (click)="expandAll(col)">
+			<th *ngFor="let col of selectedColumns" (click)="expandAll(col)">
 				{{ col }}
 			</th>
 		</tr>
@@ -40,7 +53,7 @@ Dataset: <span style="color:red">{{globals.selectedDataset}}</span>
 		</tr>
 		<template ngFor let-d [ngForOf]="data" let-r="index" >
 			<tr class="row">
-				<td *ngFor="let k of cols; let c=index" (click)="expandCell(r,c)">
+				<td *ngFor="let k of selectedColumns; let c=index" (click)="expandCell(r,c)">
 					<!-- nested data-->
 					<span *ngIf="d[k] | isObject">
 						<b>Nested Data</b>

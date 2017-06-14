@@ -13,6 +13,7 @@ import {
 	ButtonModule,
 	ToggleButtonModule,
 	RadioButtonModule,
+	CheckboxModule,
 } from 'primeng/primeng';
 
 import { CodemirrorComponent } from './codemirror.component';
@@ -52,6 +53,7 @@ import { ObjectArrayTypePipe } from './objectarraytype.pipe';
 		PrettyJsonModule,
 		ToggleButtonModule,
 		RadioButtonModule,
+		CheckboxModule,
 	],
 
   declarations: [
