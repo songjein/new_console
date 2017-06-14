@@ -17,7 +17,7 @@ import { Component } from '@angular/core';
 			<div style="height:3px;"></div>
 			<router-outlet></router-outlet>
 		</div>
-	`
+	`,
 	styles: [`
 		#left-div{
 			max-width:200px; 

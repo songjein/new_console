@@ -31,6 +31,7 @@ export class QueryComponent implements OnInit {
 	// query result message
 	execution_time: number;
 	status: string;
+	errors: string[] = [];
 
 	/**
 	 * expansion status
@@ -59,6 +60,9 @@ export class QueryComponent implements OnInit {
 	getQueryResult(query: string): void {
 		this.data = undefined;
 		this.cols = [];
+		this.errors = []; 
+		this.pages = [];
+		this.status = undefined; 
 		
 		/**
 		 * only SQL++ support now
@@ -67,15 +71,11 @@ export class QueryComponent implements OnInit {
 		this.queryService
 			.sendQuery(query)
 			.then(res => {
-				// query.service.ts
-				// when user typed query has error, response._body = "" -> why?
-				// why is there no error message in the response._body?
-				if (res == ""){
-					this.status = "error"
-					this.isLoading = false;
-					return;	
-				}
 				res = JSON.parse(res);
+				if ("errors" in res){
+					for (let i = 0; i < res["errors"].length; i++)
+						this.errors.push(res["errors"][i]["msg"]);
+				}
 				if ("results" in res) this.processQueryResult(res);
 				this.execution_time = res.metrics.executionTime;
 				this.status = res.status;
@@ -90,7 +90,6 @@ export class QueryComponent implements OnInit {
 		
 		this.allData = result.results;
 
-		this.pages = [];
 		// generate page numbers
 		for (let i = 0 ; i < this.allData.length / this.limit; i ++){
 			this.pages.push(i + 1);
@@ -98,7 +97,7 @@ export class QueryComponent implements OnInit {
 		
 		// make colums using first row
 		const labels = Object.keys(this.allData[0]);
-		for ( var i = 0; i < labels.length; i++ ) {
+		for ( var i = 0; i < labels.length; i ++ ) {
 			this.cols.push(labels[i]);
 		}
 

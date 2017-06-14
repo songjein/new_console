@@ -29,8 +29,7 @@ export class QueryService {
 					return JSON.parse(response._body);
 				})
 			.catch(this.handleError);
-	}
-
+	} 
 	private handleError(error: any): Promise<any> {
 		return Promise.reject(error.message || error);
 	}
