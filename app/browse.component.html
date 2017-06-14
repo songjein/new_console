@@ -15,13 +15,15 @@ Dataset: <span style="color:red">{{globals.selectedDataset}}</span>
 </h1>
 
 <!-- column filter -->
-<span style="font-weight:bold">Column filter :</span><br>
-<span *ngFor="let col of cols; let i=index" >
-	<span style="white-space: nowrap;">
-		[<p-checkbox name="columnfilter" value="{{col}}" label="{{col}}" [(ngModel)]="selectedColumns"></p-checkbox>]	
-		<br *ngIf="(i+1)%5 == 0">
+<div *ngIf="cols.length > 0">
+	<span style="font-weight:bold">Column filter :</span><br>
+	<span *ngFor="let col of cols; let i=index" >
+		<span style="white-space: nowrap;">
+			[<p-checkbox name="columnfilter" value="{{col}}" label="{{col}}" [(ngModel)]="selectedColumns"></p-checkbox>]	
+			<br *ngIf="(i+1)%5 == 0">
+		</span>
 	</span>
-</span>
+</div>
 
 <div style="height:10px;"></div>
 
