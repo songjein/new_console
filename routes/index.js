@@ -34,6 +34,7 @@ router.post('/query/service', (req, res, next) => {
 	};
 
 	request(options, function(error, response, body){
+		console.log("reuslt", response);
 		res.json(body);			
 	});
 });

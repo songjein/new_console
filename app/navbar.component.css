@@ -3,9 +3,8 @@ nav{
 	position: fixed;
 	top: 0;
 	height: 50px;
-	padding: 5px;
 
-	background: #DAD9FF;
+	background: rgba(218,217,255, 0.8);
 	width: 100%;
 	box-shadow: 0 2px 5px 0 rgba(0,0,0,0.24);
 }
