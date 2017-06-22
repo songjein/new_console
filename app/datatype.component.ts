@@ -82,7 +82,7 @@ export class DatatypeComponent implements OnInit, OnDestroy {
 		const dsName = this.globals.selectedDataset;
 
 		this.queryService
-			.sendQuery("SELECT VALUE ds FROM Metadata.`Dataset` ds")
+			.sendQuery("SELECT VALUE ds FROM Metadata.`Dataset` ds;")
 			.then(res => {
 				const results = JSON.parse(res).results;
 				this.MetadataDataset = results;
@@ -254,7 +254,7 @@ export class DatatypeComponent implements OnInit, OnDestroy {
 		const dsName = this.globals.selectedDataset;
 
 		this.queryService
-			.sendQuery("SELECT VALUE dt FROM Metadata.`Datatype` dt")
+			.sendQuery("SELECT VALUE dt FROM Metadata.`Datatype` dt;")
 			.then(res => {
 				const results = JSON.parse(res).results;
 				this.MetadataDatatype = results;

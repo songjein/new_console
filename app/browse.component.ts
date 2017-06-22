@@ -88,7 +88,7 @@ export class BrowseComponent implements OnInit {
 				`
 					USE ${dvName};
 					SELECT VALUE ds FROM \`${dsName}\` ds
-					LIMIT ${this.limit * this.fetchPageNum} OFFSET ${offset} 
+					LIMIT ${this.limit * this.fetchPageNum} OFFSET ${offset};
 				`
 			)
 			.then(res => {

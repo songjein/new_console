@@ -53,7 +53,7 @@ export class SidebarComponent implements OnInit{
 	 */
 	getDataverse(): void {
 		this.queryService
-			.sendQuery("SELECT VALUE dv FROM Metadata.`Dataverse` dv")
+			.sendQuery("SELECT VALUE dv FROM Metadata.`Dataverse` dv;")
 			.then(res => {
 				// parse response body
 				const dv = JSON.parse(res).results;
@@ -82,7 +82,7 @@ export class SidebarComponent implements OnInit{
 	 */
 	getDataset(): void {
 		this.queryService
-			.sendQuery("SELECT VALUE ds FROM Metadata.`Dataset` ds")
+			.sendQuery("SELECT VALUE ds FROM Metadata.`Dataset` ds;")
 			.then(res => {
 				// parse response body
 				const ds = JSON.parse(res).results;
