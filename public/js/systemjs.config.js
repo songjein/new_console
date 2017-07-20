@@ -26,7 +26,6 @@ var isPublic = typeof window != "undefined";
       '@angular/upgrade': 'npm:@angular/upgrade/bundles/upgrade.umd.js',
       // other libraries
       'rxjs':                      'npm:rxjs',
-      'angular-in-memory-web-api': 'npm:angular-in-memory-web-api/bundles/in-memory-web-api.umd.js',
 			'primeng':									 'npm:primeng',
 			"angular2-prettyjson": 'npm:angular2-prettyjson'
     },

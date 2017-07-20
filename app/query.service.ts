@@ -43,7 +43,8 @@ export class QueryService {
 			.post(apiUrl, JSON.stringify({statement: query}), {headers: this.headers})
 			.toPromise()
 			.then(response => {
-					return response._body;
+					//return response._body;
+					return JSON.parse(response._body);
 				})
 			.catch(this.handleError);
 	} 
