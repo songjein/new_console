@@ -33,7 +33,7 @@ td {
 }
 
 tr:hover td{
-	background: yellow;	
+	background: rgba(255, 228, 0, 0.2);	
 }
 
 .row:nth-child(odd) {background: rgb(245,245,245)}

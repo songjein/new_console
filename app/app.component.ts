@@ -34,7 +34,9 @@ import { Component } from '@angular/core';
 		<div id="right-div">
 			<tab-menu></tab-menu>
 			<div style="height:3px;"></div>
-			<router-outlet></router-outlet>
+			<div style="padding-left: 0.25em">
+				<router-outlet></router-outlet>
+			</div>
 		</div>
 	`,
 	styles: [`
@@ -42,13 +44,14 @@ import { Component } from '@angular/core';
 			max-width:200px; 
 			min-width:150px; 
 			float:left; 
-			padding: 30px 10px;;
+			padding: 24px 10px;
+			padding-right: 0;
 		}
 		#left-div-label{
-			font-weight:bold;
-			font-size:1.3em;
-			margin-bottom:5px;
-		}
+			font-weight: bold;
+			font-size: 1.3em;
+			margin-bottom: 8px;
+		}	
 		#right-div{
 			width: 85%; 
 			float:left; 

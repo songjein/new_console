@@ -11,93 +11,163 @@
  !
  ! Unless required by applicable law or agreed to in writing,
  ! software distributed under the License is distributed on an
- ! "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- ! KIND, either express or implied.  See the License for the
+ ! "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY ! KIND, either express or implied.  See the License for the
  ! specific language governing permissions and limitations
  ! under the License.
  !-->
-<h2 *ngIf="globals.selectedDataset">
-Dataset: <span style="color:red">{{globals.selectedDataset}}</span>
-</h2>
 
-<h1 *ngIf="!data && globals.selectedDataset">
-	Loading...
-</h1>
+<p-panel>
+	<p-header>
+		<div class="ui-helper-clearfix">
+			<span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:2px">Records View</span>
+			<p-selectButton [style]="{'float':'right'}" [options]="types" [(ngModel)]="selectedType"></p-selectButton>
+		</div>
+	</p-header>
 
-<h1 *ngIf="!globals.selectedDataverse" class="alert-msg">
-	Please select dataverse
-</h1>
 
+	<h2 *ngIf="globals.selectedDataset">
+	Dataset: <span style="color:red">{{globals.selectedDataset}}</span>
+	</h2>
+
+	<h1 *ngIf="!data && globals.selectedDataset">
+		Loading...
+	</h1>
+
+	<h1 *ngIf="!globals.selectedDataverse" class="alert-msg">
+		Please select dataverse
+	</h1>
 <h1 *ngIf="!globals.selectedDataset" class="alert-msg">
-	Please select dataset
-</h1>
+		Please select dataset
+	</h1>
 
-<!-- column filter -->
-<div *ngIf="cols.length > 0">
-	<span style="font-weight:bold">Column filter :</span><br>
-	<span *ngFor="let col of cols; let i=index" >
-		<span style="white-space: nowrap;">
-			[<p-checkbox name="columnfilter" value="{{col}}" label="{{col}}" [(ngModel)]="selectedColumns"></p-checkbox>]	
-			<br *ngIf="(i+1)%5 == 0">
-		</span>
-	</span>
-</div>
+	<!-- Table Type -->
+	<div *ngIf="selectedType == 'Table'" id="browse-container">
 
-<div style="height:10px;"></div>
+		<!-- column filter -->
+		<div *ngIf="cols.length > 0">
+			<span style="font-weight:bold">Column filter :</span><br>
+			<span *ngFor="let col of cols; let i=index" >
+				<span style="white-space: nowrap;">
+					[<p-checkbox name="columnfilter" value="{{col}}" label="{{col}}" [(ngModel)]="selectedColumns"></p-checkbox>]	
+				</span>
+			</span>
+		</div>
 
-<!-- pagination -->
-<div class="pagination">
-	<div class="page-label" *ngIf="chunkNum > 1" (click)="getPrevChunk()">
-		<i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
-	</div>
-	<div class="page" *ngFor="let page of pages" (click)="getPageData(page)">{{page}}</div>
-	<div class="page-label" (click)="getNextChunk()" *ngIf="data">
-		<i class="fa fa-chevron-circle-right" aria-hidden="true"></i>
-	</div>
-	<div class="page-label" *ngIf="isLoading">
-		<i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>
-	</div>
-</div>
-<div style="height:10px; clear:both"></div>
+		<div style="height:10px;"></div>
 
-<!-- table -->
-<div id="browse-container">
-	<table>
-		<tr>
-			<th *ngFor="let col of selectedColumns" (click)="expandAll(col)">
-				{{ col }}
-			</th>
-		</tr>
-		<tr *ngIf="data && data.length == 0">
-			<td colspan="100">Empty</td>
-		</tr>
-		<template ngFor let-d [ngForOf]="data" let-r="index" >
-			<tr class="row">
-				<td *ngFor="let k of selectedColumns; let c=index" (click)="expandCell(r,c)">
-					<!-- nested data-->
-					<span *ngIf="d[k] | isObject">
-						<b>Nested Data</b>
-					</span>
-					<!-- array of nested data-->
-					<span *ngIf="d[k] | isObjectArray">
-						[
-							<span *ngFor="let item of d[k]; let i = index">
-								<span *ngIf="i > 0">,</span>
-								<b>Nested Data</b>
+		<!-- table -->
+		<table>
+			<tr>
+				<td id="page-td" colspan="100">
+					<!-- pagination -->
+					<div class="pagination">
+						<div class="page-label" *ngIf="chunkNum > 1" (click)="getPrevChunk()">
+							<i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+						</div>
+						<div class="page" *ngFor="let page of pages" (click)="getPageData(page)">{{page}}</div>
+						<div class="page-label" (click)="getNextChunk()" *ngIf="data">
+							<i class="fa fa-chevron-circle-right" aria-hidden="true"></i>
+						</div>
+						<div class="page-label" *ngIf="isLoading">
+							<i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th *ngFor="let col of selectedColumns" (click)="expandAll(col)">
+					{{ col }}
+				</th>
+			</tr>
+			<tr *ngIf="data && data.length == 0">
+				<td colspan="100">Empty</td>
+			</tr>
+			<template ngFor let-d [ngForOf]="data" let-r="index" >
+				<tr class="row">
+					<td *ngFor="let k of selectedColumns; let c=index" (click)="expandCell(r,c)" class="align-center">
+						<!-- nested data-->
+						<span *ngIf="d[k] | isObject">
+							<b>{{"{"}} + {{"}"}}</b>
+						</span>
+						<!-- array of nested data-->
+						<span *ngIf="d[k] && (globals.specialCasePairs | keys).includes(k)">
+							<span *ngIf="globals.specialCasePairs[k] == 'UNORDEREDLIST'">
+								<b *ngIf="d[k][0] | isObject">{{"{"}}{{"{"}} + {{"}"}}{{"}"}}</b>
+								<b *ngIf="!(d[k][0] | isObject)">{{"{"}}{{"{"}} {{d[k]}} {{"}"}}{{"}"}}</b>
 							</span>
-						]
-					</span>
-					<!-- plain data -->
-					<span *ngIf="!(d[k] | isObject) && !(d[k] | isObjectArray)">
-						{{ d[k] }}
-					</span>
+							<span *ngIf="globals.specialCasePairs[k] == 'ORDEREDLIST'">
+								<b *ngIf="d[k][0] | isObject">[ + ]</b>
+								<b *ngIf="!(d[k][0] | isObject)">[ {{d[k]}} ]</b>
+							</span>
+						</span>
+						<!-- plain data -->
+						<span *ngIf="!(d[k] | isObject) && !(globals.specialCasePairs | keys).includes(k)">
+							{{ d[k] }}
+						</span>
+					</td>
+				</tr>
+				<tr *ngIf="expansions[r]"> 
+					<td [attr.colspan]="100" (click)="expandCell(r,c,true)">
+						<pre [innerHTML]=" expansions[r] | prettyjson:3"></pre>
+					</td>
+				</tr>
+			</template>
+		</table>
+	</div>
+	<!-- Table Type End -->
+
+	<!-- JSON Type -->
+	<div *ngIf="selectedType == 'JSON'" id="browse-container">
+		<table>
+			<tr *ngFor="let d of data" >
+				<td>
+					<pre [innerHTML]="d | prettyjson:3"></pre>
 				</td>
 			</tr>
-			<tr *ngIf="expansions[r]"> 
-				<td [attr.colspan]="100" (click)="expandCell(r,c,true)">
-					<pre [innerHTML]=" expansions[r] | prettyjson:3"></pre>
+		</table>
+	</div>
+	<!-- JSON Type End -->
+
+	<!-- Tree Type -->
+	<div *ngIf="selectedType == 'Tree'" id="browse-container">
+		<table *ngFor="let d of data" style="margin: 20px 0;">
+			<tr *ngFor="let col of cols">
+				<th class="tree-th">
+					{{ col }}
+				</th>
+				<!-- nested data -->
+				<td *ngIf="d[col] | isObject" class="tree-td">
+					<table>
+						<tr *ngFor="let n_col of (d[col] | keys)"> 
+							<th>
+								{{ n_col }}
+							</th>
+							<td>
+								{{d[col][n_col]}}
+							</td>
+						</tr>
+					</table>
+				</td>
+				<!-- nested array-->
+				<td *ngIf="d[col] | isObjectArray" class="tree-td">
+					<table *ngFor="let i of d[col] | keys" style="margin: 20px 0;" >
+						<tr *ngFor="let n_col of (d[col][i] | keys)"> 
+							<th>
+								{{ n_col }}
+							</th>
+							<td>
+								{{d[col][i][n_col]}}
+							</td>
+						</tr>
+					</table>
+				</td>
+				<!-- plain data -->
+				<td *ngIf="!(d[col] | isObject) && !(d[col] | isObjectArray)"class="tree-td">
+					{{ d[col] }}
 				</td>
 			</tr>
-		</template>
-	</table>
-</div>
+		</table>
+	</div>
+	<!-- Tree Type End -->
+</p-panel>
+

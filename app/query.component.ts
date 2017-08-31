@@ -36,6 +36,12 @@ import { Globals } from './globals';
 
 export class QueryComponent implements OnInit {
 
+	/**
+	 * view type
+	 */
+	types: SelectItem[];
+	selectedType: string = "Table";
+
 	// typed query
 	query: string; 
 	
@@ -67,12 +73,26 @@ export class QueryComponent implements OnInit {
 	pages: number[] = []; // page numbers
 	isLoading: boolean = false;
 
+	/**
+	 * Query History 
+	 */
+	const QH_DELIM = "!@#$%^"; // query history delimeter
+	const QH_KEY: string = "queryHistory"; // query history key
+	queryHistory: string[];
+	qhCursor: number;
+
 	constructor(
 		private globals: Globals,
 		private queryService: QueryService
 	) { 
 		// mode config, codemirror
 		this.config = { mode: "asterix", lineNumbers: true}	;
+
+		// view type
+		this.types = [];	
+		this.types.push({label: "Table", value: "Table"});
+		this.types.push({label: "JSON", value: "JSON"});
+		this.types.push({label: "Tree", value: "Tree"});
 	}
 
 	/**
@@ -193,12 +213,84 @@ export class QueryComponent implements OnInit {
 	/**
 	 * if click 'send query'
 	 */
-	onClick(){
+	sendQuery(){
 		this.getQueryResult(this.query.replace(/\n/g, " "));
+		this.addQueryHistory(this.query);
+		this.qhCursor = this.queryHistory.length;
+		
+		const dvds = this.extractDvDsName(this.query);
+		this.globals.buildSpecialCasePairs(dvds.dvName, dvds.dsNames);
+	}
+	
+	extractDvDsName(query: string){
+		const items = query.replace(/,/g, " , ").replace(/;/g, "").split(" "); 
+
+		items = items.filter(function(item){
+			return item != "";
+		});
+		
+		// "USE"'s index
+		const useIdx= items.findIndex(function(element){
+			return element.toLowerCase() == "use";
+		});
+
+		const dvName = items[useIdx + 1].trim();
+
+		// "FROM"'s index
+		const fromIdx = items.findIndex(function(element){
+			return element.toLowerCase() == "from";
+		});
+
+		const dsNames = [items[fromIdx + 1].trim()];
+		for (let i = fromIdx; i < items.length; i++){
+			if (items[i] == ","){
+				dsNames.push(items[i + 1].trim());
+			}
+		} 
+
+		console.log ("Special : ", this.globals.specialCasePairs);
+
+		return {dvName: dvName, dsNames: dsNames};
+	}
+
+	loadQueryHistory(){
+		// get history
+		let queryHistory = localStorage.getItem(this.QH_KEY);
+		if (queryHistory == null){
+			this.queryHistory = [];
+		}
+		else {
+			this.queryHistory = queryHistory.split(this.QH_DELIM);
+		}
+		this.qhCursor = this.queryHistory.length;
+	}
+
+	addQueryHistory(qh:string){
+		// add history
+		this.queryHistory.push(qh);
+		// convert to string and save to localStorage
+		localStorage.setItem(this.QH_KEY, this.queryHistory.join(this.QH_DELIM));
+	}
+
+	getPrevHistory(){
+		if (this.qhCursor - 1  >= 0 )
+		this.query = this.queryHistory[--this.qhCursor];
+	}
+
+	getNextHistory(){
+		//TODO: exception 
+		if (this.qhCursor + 1  <= this.queryHistory.length )
+			this.query = this.queryHistory[++this.qhCursor];
+	}
+
+	clearHistory(){
+		localStorage.clear();	
+		this.loadQueryHistory();
 	}
 
 	ngOnInit(): void {
 		this.query = ""; 
+		this.loadQueryHistory();
 	}
 
 }

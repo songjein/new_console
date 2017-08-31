@@ -25,6 +25,16 @@ th {
 	color: black;
 }
 
+#view-types{
+	float: left;
+}
+
+th {
+	height: 30px;
+	background: rgb(222,222,222);
+	color: black;
+}
+
 table, th, td {
 	border :1px solid black;	
 	padding: 2px 5px;
@@ -40,7 +50,16 @@ th:hover{
 }
 
 td:hover{
-	background: yellow;	
+	background: rgba(255, 228, 0, 0.2);	
+}
+
+#page-td {
+	background-color: #F6F6F6;
+	text-align: left;
+}
+
+#page-td:hover {
+	background-color: #F6F6F6;
 }
 
 .row:nth-child(odd) {background: rgb(245,245,245)}
@@ -69,6 +88,16 @@ table {
 	border-radious: 5px;
 }
 
+.pagination div:active {
+	background-color: #4CAF50;
+	color: white;
+}
+
+.pagination div:after {
+	background-color: #4CAF50;
+	color: white;
+}
+
 .pagination.page:active {
 	background-color: #4CAF50;
 	color: white;
@@ -81,4 +110,11 @@ table {
 	padding: 2px 3px;
 	margin: 0 3px;
 	cursor: pointer;
+}
+
+.tree-th{
+	width: 200px;
+}
+.tree-td{
+	width: 800px;
 }

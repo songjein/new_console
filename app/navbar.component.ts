@@ -29,13 +29,18 @@ import { Globals } from './globals';
 	selector: 'navbar',
 	template: `
 		<nav>
-			<a href="/"><img src="queryconsoleui/images/asterixdb_tm.png"></a>
-			<strong  class="current-location">
+			<!--<a href="/"><img src="queryconsoleui/images/asterixdb_tm.png"></a>-->
+			<a href="/"><img src="/images/asterixdb_tm.png"></a>
+			<strong>AsterixDB Query Web Interface</strong>
+
+			<strong *ngIf="globals.selectedDataverse" class="current-location">
+				(
 				{{globals.selectedDataverse}} 
 				<span *ngIf="globals.selectedDataset"> 
 					<span>/</span> 
 					<span style="color:red;">{{globals.selectedDataset}}</span>
 				</span>
+				)
 			</strong>
 		</nav>
 

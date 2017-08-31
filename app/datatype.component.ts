@@ -45,9 +45,7 @@ export class DatatypeComponent implements OnInit, OnDestroy {
 	MetadataDataset : any[];
 	MetadataDatatype : any[];
 	nestedDatatypes = [];
-	nestedDatatypesDatas = [];
-
-	nestedFieldTypeList: string[] = [];
+	nestedDatatypeInSpecialCase = [];
 
 	/**
 	 * table data
@@ -69,7 +67,7 @@ export class DatatypeComponent implements OnInit, OnDestroy {
 	
 
 	/**
-	 * this function called in getData()
+	 * this function called in buildDatatypeTable()
 	 * query result contains 
 	 * => DataverseName, DatasetName, DataverseName, DatatypeName 
 	 * 
@@ -90,8 +88,9 @@ export class DatatypeComponent implements OnInit, OnDestroy {
 				for ( var i = 0; i < results.length; i++ ) {
 					const _dvName = results[i]["DataverseName"];
 					const _dsName = results[i]["DatasetName"];
+					// find datatype of selected dvName and dsName
 					if ( _dvName == dvName && _dsName == dsName){
-						this.datatype = results[i]["DatatypeName"]
+						this.datatype = results[i]["DatatypeName"];
 						break;
 					}
 				}
@@ -105,19 +104,27 @@ export class DatatypeComponent implements OnInit, OnDestroy {
 	 * this function is called in getDatatypeDetail()
 	 * to process special case nested datatype
 	 * like {{}}, [] (UN)ORDEREDLIST
+	 *
+	 * parameter specialCaseList has an array of special case type
+	 * [
+	 * 	{ "FieldName": "hashtags", "FieldType": "type_tweet_hashtags", "IsNullable": true }
+	 * 	...
+	 * 	{ "FieldName": "user_mentions", "FieldType": "type_tweet_user_mentions", "IsNullable": true }
+	 * ]
 	 */
-	processSpecialCase(): void{
+	processSpecialCase(specialCaseList: any[]): void{
 		const dvName = this.globals.selectedDataverse;
 		const dsName = this.globals.selectedDataset;
 
-		for (let i = 0 ; i < this.nestedFieldTypeList.length; i++){
-			const nestedType = this.nestedFieldTypeList[i];
+		for (let i = 0 ; i < specialCaseList.length; i++){
+			const specialType = specialCaseList[i];
 			
-			// find nested type's detail and update special case's FieldType 
+			// find special type's detail and update special case's FieldType 
 			for (let j = 0 ; j < this.MetadataDatatype.length; j++){
 				const mtdt = this.MetadataDatatype[j];
 
-				if (mtdt["DataverseName"] == dvName && mtdt["DatatypeName"] == nestedType["FieldType"]){
+				if (mtdt["DataverseName"] == dvName && mtdt["DatatypeName"] == specialType["FieldType"]){
+					// tag : UNORDEREDLIST or ORDEREDLIST
 					const tag = mtdt["Derived"]["Tag"];
 					let updatedValue = "";
 					let innerValue = "";
@@ -135,24 +142,24 @@ export class DatatypeComponent implements OnInit, OnDestroy {
 					}
 
 					// If inner-item's datatype is not a primitive type ex) int64, string, datetime
-					// add it to nestedDatatypesDatas for making table of nested data 
+					// add it to nestedDatatypeInSpecialCase for making table of nested data 
 					// because that type can be another table (nested data type)
 					//
-					// * primitive type's dataverse => Metadata
+					// * primitive type's dataverse => "Metadata"
 					// * non-primitive type's dataverse => something else 
 					//
 					for (let l = 0 ; l < this.MetadataDatatype.length; l++){
 						const _mtdt = this.MetadataDatatype[l];
 						if (_mtdt["DataverseName"] == dvName && _mtdt["DatatypeName"] == innerValue){
-							this.nestedDatatypesDatas.push(_mtdt);
+							this.nestedDatatypeInSpecialCase.push(_mtdt);
 							break;
 						}
 					}
 
 					// update FieldType of this.data (table data)
-					for (let l = 0 ; l < this.data.length ; l++){
-						// update special case 
-						if (specialCase && this.data[l]["FieldType"] == nestedType["FieldType"]){
+					for (let l = 0 ; l < this.data.length ; l++){ 
+						// update special case's FieldType (will be shown on the table)
+						if (specialCase && this.data[l]["FieldType"] == specialType["FieldType"]){
 							this.data[l]["FieldType"] = updatedValue;	
 							break;
 						}
@@ -184,13 +191,13 @@ export class DatatypeComponent implements OnInit, OnDestroy {
 				const _dvName = this.MetadataDatatype[j]["DataverseName"];
 				const _dtName = this.MetadataDatatype[j]["DatatypeName"];
 				if ( _dvName == dvName && _dtName == type ){
-					this.nestedDatatypesDatas.push(this.MetadataDatatype[j]);
+					this.nestedDatatypeInSpecialCase.push(this.MetadataDatatype[j]);
 				}
 			}
 		}
 		
-		for ( let i = 0 ; i < this.nestedDatatypesDatas.length; i++){
-			const record = this.nestedDatatypesDatas[i]["Derived"]["Record"];	
+		for ( let i = 0 ; i < this.nestedDatatypeInSpecialCase.length; i++){
+			const record = this.nestedDatatypeInSpecialCase[i]["Derived"]["Record"];	
 			const data = record["Fields"];
 			
 			// make cols
@@ -229,24 +236,28 @@ export class DatatypeComponent implements OnInit, OnDestroy {
 	 *			"Timestamp": "Fri Mar 31 23:42:28 KST 2017" 
 	 *		}
 	 *
-	 * How to detect nested datatype?
-	 * if "_" + FieldName is included in FieldType 
-	 * ex) {"FieldName": "hashtags", "FieldType": "type_tweet_hashtags", "IsNullable": true }
-	 *     { "FieldName": "user_mentions", "FieldType": "type_tweet_user_mentions", "IsNullable": true }
-	 * => we think of that as a nested datatype
-	 *
 	 * Special case : ORDEREDLIST => [], UNORDEREDLIST => {{}}
 	 * we found that predefined datatype like ORDEREDLIST, and UNORDEREDLIST 
-	 * Like following examples
+	 *
+	 * if the shape of FieldType(in Fields in Record in Derived) looks like (DatatypeName + "_" + FieldName)
+	 *
+	 * ex) For examples, when DatatypeName is type_tweet
 	 * 
-	 * { "DataverseName": "twitter", "DatatypeName": "type_tweet_hashtags", 
-	 *   "Derived": { "Tag": "UNORDEREDLIST", "IsAnonymous": true, "UnorderedList": "string" }, 
-	 *   "Timestamp": "Tue Feb 28 13:27:26 KST 2017" 
-	 * }
-	 * { "DataverseName": "TinySocial", "DatatypeName": "GleambookUserType_employment", 
-	 *   "Derived": { "Tag": "ORDEREDLIST", "IsAnonymous": true, "OrderedList": "EmploymentType" }, 
-	 *   "Timestamp": "Fri Feb 10 23:53:38 KST 2017" 
-	 * }
+	 *     { "FieldName": "hashtags", "FieldType": "type_tweet_hashtags", "IsNullable": true }
+	 *     { "FieldName": "user_mentions", "FieldType": "type_tweet_user_mentions", "IsNullable": true }
+	 *		these will be contain in the specialCaseList
+	 *
+	 *		and then, we can find it's details by searching that FieldType in the same metadata
+	 * 		For examples...
+	 *
+	 *     { "DataverseName": "twitter", "DatatypeName": "type_tweet_hashtags", 
+	 *       "Derived": { "Tag": "UNORDEREDLIST", "IsAnonymous": true, "UnorderedList": "string" }, 
+	 *       "Timestamp": "Tue Feb 28 13:27:26 KST 2017" 
+	 *     }
+	 *     { "DataverseName": "TinySocial", "DatatypeName": "GleambookUserType_employment", 
+	 *       "Derived": { "Tag": "ORDEREDLIST", "IsAnonymous": true, "OrderedList": "EmploymentType" }, 
+	 *       "Timestamp": "Fri Feb 10 23:53:38 KST 2017" 
+	 *     }
 	 *
 	 */
 	getDatatypeDetail(): void {
@@ -267,18 +278,22 @@ export class DatatypeComponent implements OnInit, OnDestroy {
 					if (_dataverse == dvName && _datatype == this.datatype){
 						const record = results[i]["Derived"]["Record"];
 
-						this.data = record["Fields"];
-						this.isOpen = record["IsOpen"];
+						// all the information for type details are in the "Fields"
+						this.data = record["Fields"]; 
 
-						// find nested fieldType ("_FieldName" in FieldType)
+						// is selected datatype is open type ?	
+						this.isOpen = record["IsOpen"]; 
+
+						// find special case ("_FieldName" in FieldType)
+						let specialCaseList = [];
 						for (let j = 0 ; j < this.data.length; j++){
 							if (this.data[j]["FieldType"].includes("_" + this.data[j]["FieldName"])){
-								this.nestedFieldTypeList.push(this.data[j]);
+								specialCaseList.push(this.data[j]);
 							}
 						}
 
-						// process special case ([ordered list], {{unordered list}}) using this.nestedFieldTypeList
-						this.processSpecialCase();
+						// process special case ([ordered list], {{unordered list}}) 
+						this.processSpecialCase(specialCaseList);
 						
 						// make columns using the first row
 						const labels = Object.keys(record["Fields"][0]);
@@ -293,9 +308,9 @@ export class DatatypeComponent implements OnInit, OnDestroy {
 	
 	/**
 	 * send query and get datatype information 
-	 * getData() => getDatatype() => getDatatypeDetail() => processSpecialCase() => makeNestedDatatypeTable()
+	 * buildDatatypeTable() => getDatatype() => getDatatypeDetail() => processSpecialCase() => makeNestedDatatypeTable()
 	 */
-	getData(): void {
+	buildDatatypeTable(): void {
 		this.cols = [];
 
 		const dvName = this.globals.selectedDataverse;
@@ -317,10 +332,10 @@ export class DatatypeComponent implements OnInit, OnDestroy {
 	}	
 
 	/**
-	 * call getData() when this component loaded
+	 * call buildDatatypeTable() when this component loaded
 	 */
 	ngOnInit(): void {
-		this.getData();
+		this.buildDatatypeTable();
 	}
 
 	ngOnDestroy(): void {

@@ -18,6 +18,7 @@
  */
 import { Component, OnInit, Input } from '@angular/core'; 
 import { DataTableModule, SharedModule, ButtonModule, ToggleButtonModule } from 'primeng/primeng'; 
+import { SelectItem } from 'primeng/primeng';
 import { QueryService } from './query.service'; 
 import { Globals } from './globals';
 
@@ -33,6 +34,12 @@ import { Globals } from './globals';
 })
 
 export class BrowseComponent implements OnInit {
+	
+	/**
+	 * view type
+	 */
+	types: SelectItem[];
+	selectedType: string = "Table";
 
 	/**
 	 * data, cols will be injected to the table 
@@ -68,7 +75,12 @@ export class BrowseComponent implements OnInit {
 	constructor(
 		private globals: Globals,
 		private queryService: QueryService
-	) { }
+	) { 
+		this.types = [];	
+		this.types.push({label: "Table", value: "Table"});
+		this.types.push({label: "JSON", value: "JSON"});
+		this.types.push({label: "Tree", value: "Tree"});
+	}
 	
 	/**
 	 * get chunk from the database 
@@ -221,5 +233,6 @@ export class BrowseComponent implements OnInit {
 	ngOnInit(): void {
 		this.firstFetched = false;
 		this.getChunk(this.offset);
+		this.globals.buildSpecialCasePairs(this.globals.selectedDataverse, [this.globals.selectedDataset]);
 	}
 }

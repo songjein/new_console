@@ -32,6 +32,8 @@ import {
 	ToggleButtonModule,
 	RadioButtonModule,
 	CheckboxModule,
+	SelectButtonModule,	
+	PanelModule,
 } from 'primeng/primeng';
 
 import { CodemirrorComponent } from './codemirror.component';
@@ -72,6 +74,8 @@ import { ObjectArrayTypePipe } from './objectarraytype.pipe';
 		ToggleButtonModule,
 		RadioButtonModule,
 		CheckboxModule,
+		SelectButtonModule,	
+		PanelModule,
 	],
 
   declarations: [

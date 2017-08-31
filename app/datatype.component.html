@@ -16,56 +16,69 @@
  ! specific language governing permissions and limitations
  ! under the License.
  !-->
-<h2 *ngIf="data" >
-	{{datatype}} (Open-type: <span style="color:red">{{isOpen}}</span>)
-</h2>
 
-<h1 *ngIf="!data && globals.selectedDataset">
-	Loading...
-</h1>
+<p-panel>
+	<p-header>
+		<div class="ui-helper-clearfix">
+			<span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:2px">Datatype View</span>
+		</div>
+	</p-header>
 
-<h1 *ngIf="!globals.selectedDataverse" class="alert-msg">
-	Please select dataverse
-</h1>
+	<h1 *ngIf="!data && globals.selectedDataset">
+		Loading...
+	</h1>
 
-<h1 *ngIf="!globals.selectedDataset" class="alert-msg">
-	Please select dataset
-</h1>
+	<h1 *ngIf="!globals.selectedDataverse" class="alert-msg">
+		Please select dataverse
+	</h1>
 
-<table>
-	<tr>
-		<th *ngFor="let col of cols">
-			{{ col}}
-		</th>
-	</tr>
-	<template ngFor let-d [ngForOf]="data" let-r="index" >
-		<tr class="row">
-			<td *ngFor="let k of cols; let c=index" (click)="selectNestedType(d[k])">
-				{{ d[k] }}
-			</td>
+	<h1 *ngIf="!globals.selectedDataset" class="alert-msg">
+		Please select dataset
+	</h1>
+
+	<h2 *ngIf="data" >
+		{{datatype}} 
+		(
+		<span *ngIf="isOpen" style="color:red">Open </span>
+		<span *ngIf="!isOpen" style="color:red">Closed </span>
+		Type
+		)
+	</h2>
+
+	<table>
+		<tr>
+			<th *ngFor="let col of cols">
+				{{ col}}
+			</th>
 		</tr>
-	</template>
-</table>
-
-<div *ngFor="let ndata of nestedData; let i = index" >
-	<!-- if selectedDatatype string contain nestedDatatypesDatas[i]["DatatypeName"] -->
-	<div *ngIf='selectedNestedDatatype.indexOf(nestedDatatypesDatas[i]["DatatypeName"]) != -1'>
-		<h3>{{selectedNestedDatatype}}</h3>
-		<table>
-			<tr>
-				<th *ngFor="let col of cols">
-					{{ col }}
-				</th>
+		<template ngFor let-d [ngForOf]="data" let-r="index" >
+			<tr class="row">
+				<td *ngFor="let k of cols; let c=index" (click)="selectNestedType(d[k])">
+					{{ d[k] }}
+				</td>
 			</tr>
-			<template ngFor let-d [ngForOf]="ndata" let-r="index" >
-				<tr class="row">
-					<td *ngFor="let k of cols; let c=index">
-						{{ d[k] }}
-					</td>
+		</template>
+	</table>
+
+	<div *ngFor="let ndata of nestedData; let i = index" >
+		<!-- if selectedDatatype string contain nestedDatatypeInSpecialCase[i]["DatatypeName"] -->
+		<div *ngIf='selectedNestedDatatype.indexOf(nestedDatatypeInSpecialCase[i]["DatatypeName"]) != -1'>
+			<h3>{{selectedNestedDatatype}}</h3>
+			<table>
+				<tr>
+					<th *ngFor="let col of cols">
+						{{ col }}
+					</th>
 				</tr>
-			</template>
-		</table>
+				<template ngFor let-d [ngForOf]="ndata" let-r="index" >
+					<tr class="row">
+						<td *ngFor="let k of cols; let c=index">
+							{{ d[k] }}
+						</td>
+					</tr>
+				</template>
+			</table>
+		</div>
 	</div>
-</div>
 
-
+</p-panel>
