@@ -31,10 +31,6 @@
 		Dataset: <span style="color:red">{{globals.selectedDataset}}</span>
 		</h2>
 
-		<h1 *ngIf="!data && globals.selectedDataset">
-			Loading...
-		</h1>
-
 		<h1 *ngIf="!globals.selectedDataverse" class="alert-msg">
 			Please select dataverse
 		</h1>
@@ -43,6 +39,10 @@
 			Please select dataset
 		</h1>
 	</div>
+
+	<h1 *ngIf="isLoading">
+		Loading...
+	</h1>
 
 	<!-- Query Status -->
 	<div *ngIf="isReused && status" id="query-status" >
@@ -53,7 +53,6 @@
 		<div *ngIf='status != "success"' id="qs-fail">
 			Status: <span class="qs-txt">{{status}}</span>
 		</div>
-
 
 		<div *ngIf="errors.length > 0" id="qs-error" >
 			Error Message : <span class="qs-txt" *ngFor="let msg of errors">{{ msg }}</span>
@@ -105,7 +104,7 @@
 				</td>
 			</tr>
 			<tr>
-				<th *ngFor="let col of selectedColumns" (click)="expandAll(col)">
+				<th *ngFor="let col of selectedColumns" (click)="expandAll(col)" [class.selectedColumn]="col == clickedColumn">
 					{{ col }}
 				</th>
 			</tr>

@@ -73,6 +73,7 @@ export class BrowseComponent implements OnInit {
 	expanded: boolean = false;
 	lastSelectedColumn: number;
 	firstFetched: boolean;
+	clickedColumn: string;
 
 	/**
 	 * data fetch offset
@@ -230,10 +231,12 @@ export class BrowseComponent implements OnInit {
 		// if user clicked same cell
 		if (this.expansions[row] == clickedData[clickedColumn]) {
 			this.expansions[row] = null; 
+			this.clickedColumn = "";
 			return;
 		}
 
 		this.expansions[row] = clickedData[clickedColumn];
+		this.clickedColumn = clickedColumn;
 	}
 
 	/**
@@ -249,8 +252,11 @@ export class BrowseComponent implements OnInit {
 				this.expansions[i] = null;
 			}
 			this.expanded= false;
+			this.clickedColumn = "";
 			return;	
 		}
+
+		this.clickedColumn = col;
 		
 		// will be used move page when expanded all, to refresh expended area
 		this.lastSelectedColumn = col;

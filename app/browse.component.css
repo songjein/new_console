@@ -145,3 +145,7 @@ table {
 .tree-td{
 	width: 800px;
 }
+
+.selectedColumn{
+	background: orange;	
+}
