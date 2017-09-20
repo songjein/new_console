@@ -73,3 +73,7 @@ p-toggleButton {
 .align-center{
 	text-align: center;
 }
+
+td {
+	min-width: 100px;
+}
