@@ -46,7 +46,7 @@
 <p-panel *ngIf="data && data.length > 0">
 	<p-header>
 		<div class="ui-helper-clearfix">
-			<span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:2px">Query Result</span>
+			<span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:2px">Query Status</span>
 			<p-selectButton [style]="{'float':'right'}" [options]="types" [(ngModel)]="selectedType"></p-selectButton>
 		</div>
 	</p-header>
@@ -75,132 +75,6 @@
 		</div>
 	</div>
 	<!-- Query Status End -->
-
-
-	<!-- Table Type -->
-	<div *ngIf="selectedType == 'Table'" id="browse-container">
-	
-		<!-- column filter -->
-		<div *ngIf="cols && cols.length > 0">
-			<span style="font-weight:bold">Column filter :</span><br>
-			<span *ngFor="let col of cols; let i=index" >
-				<span style="white-space: nowrap;">
-					[<p-checkbox name="columnfilter" value="{{col}}" label="{{col}}" [(ngModel)]="selectedColumns"></p-checkbox>]	
-				</span>
-			</span>
-		</div>
-
-		<div style="height:10px;"></div>
-
-		<!-- table; query result -->
-		<!--<div id="browse-container">-->
-			<table>
-				<tr>
-					<td id="page-td" colspan="100">
-						<!-- pagination -->
-						<div class="pagination">
-							<div class="page" *ngFor="let page of pages" (click)="getPageData(page)">{{page}}</div>
-							<div class="page-label" *ngIf="isLoading">
-								<i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>
-							</div>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<th *ngFor="let col of selectedColumns" (click)="expandAll(col)">
-						{{ col }}
-					</th>
-				</tr>
-				<tr *ngIf="data && data.length == 0">
-					<td colspan="100">Empty</td>
-				</tr>
-				<template ngFor let-d [ngForOf]="data" let-r="index" >
-					<tr class="row">
-						<td *ngFor="let k of selectedColumns; let c=index" (click)="expandCell(r,c)" class="align-center">
-							<!-- nested data-->
-							<span *ngIf="d[k] | isObject">
-								<b>{{"{"}} + {{"}"}}</b>
-							</span>
-							<!-- array of nested data-->
-							<span *ngIf="d[k] && (globals.specialCasePairs | keys).includes(k)">
-								<span *ngIf="globals.specialCasePairs[k] == 'UNORDEREDLIST'">
-									<b *ngIf="d[k][0] | isObject">{{"{"}}{{"{"}} + {{"}"}}{{"}"}}</b>
-									<b *ngIf="!(d[k][0] | isObject)">{{"{"}}{{"{"}} {{d[k]}} {{"}"}}{{"}"}}</b>
-								</span>
-								<span *ngIf="globals.specialCasePairs[k] == 'ORDEREDLIST'">
-									<b *ngIf="d[k][0] | isObject">[ + ]</b>
-									<b *ngIf="!(d[k][0] | isObject)">[ {{d[k]}} ]</b>
-								</span>
-							</span>
-							<!-- plain data -->
-							<span *ngIf="!(d[k] | isObject) && !(globals.specialCasePairs | keys).includes(k)">
-								{{ d[k] }}
-							</span>
-						</td>
-					</tr>
-					<tr *ngIf="expansions[r]"> 
-						<td [attr.colspan]="100" (click)="expandCell(r,c,true)">
-							<pre [innerHTML]=" expansions[r] | prettyjson:3"></pre>
-						</td>
-					</tr>
-				</template>
-			</table>
-		<!--</div>-->
-	</div>
-	<!-- Table Type End -->
-
-	<!-- JSON Type -->
-	<div *ngIf="selectedType == 'JSON'" id="browse-container">
-		<table>
-			<tr *ngFor="let d of data" >
-				<td>
-					<pre [innerHTML]="d | prettyjson:3"></pre>
-				</td>
-			</tr>
-		</table>
-	</div>
-	<!-- JSON Type End -->
-
-	<!-- Tree Type -->
-	<div *ngIf="selectedType == 'Tree'" id="browse-container">
-		<table *ngFor="let d of data" style="margin: 20px 0;">
-			<tr *ngFor="let col of cols">
-				<th class="tree-th">
-					{{ col }}
-				</th>
-				<!-- nested data -->
-				<td *ngIf="d[col] | isObject" class="tree-td">
-					<table>
-						<tr *ngFor="let n_col of (d[col] | keys)"> 
-							<th>
-								{{ n_col }}
-							</th>
-							<td>
-								{{d[col][n_col]}}
-							</td>
-						</tr>
-					</table>
-				</td>
-				<!-- nested array-->
-				<td *ngIf="d[col] | isObjectArray" class="tree-td">
-					<table *ngFor="let i of d[col] | keys" style="margin: 20px 0;" >
-						<tr *ngFor="let n_col of (d[col][i] | keys)"> 
-							<th>
-								{{ n_col }}
-							</th>
-							<td>
-								{{d[col][i][n_col]}}
-							</td>
-						</tr>
-					</table>
-				</td>
-				<!-- plain data -->
-				<td *ngIf="!(d[col] | isObject) && !(d[col] | isObjectArray)"class="tree-td">
-					{{ d[col] }}
-				</td>
-			</tr>
-		</table>
-	</div>
-	<!-- Tree Type End -->
 </p-panel>
-<!-- Query Result End-->
+
+<browse-tab [query]="query" [isReused]="true"></browse-tab>

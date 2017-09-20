@@ -65,6 +65,7 @@ import { routing } from './routes';
 import { KeysPipe } from './keys.pipe';
 import { ObjectTypePipe } from './objecttype.pipe';
 import { ObjectArrayTypePipe } from './objectarraytype.pipe';
+import { AttachQMarkPipe } from './attachQMark.pipe';
 
 @NgModule({
   imports: [ 
@@ -101,6 +102,7 @@ import { ObjectArrayTypePipe } from './objectarraytype.pipe';
 		KeysPipe,
 		ObjectTypePipe,
 		ObjectArrayTypePipe,
+		AttachQMarkPipe,
 		CreateDVComponent,
 		CreateDSComponent,
 		CreateDTComponent,

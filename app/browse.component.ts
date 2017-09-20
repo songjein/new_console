@@ -34,6 +34,12 @@ import { Globals } from './globals';
 })
 
 export class BrowseComponent implements OnInit {
+
+	/**
+	 * query component reuse this component and will input user typed query
+	 */
+	@Input() query: string;
+	@Input() isReused: boolean;
 	
 	/**
 	 * view type
@@ -54,9 +60,16 @@ export class BrowseComponent implements OnInit {
 	selectedColumns: string[] = [];
 
 	/**
+	 * query result message
+	 */
+	execution_time: number;
+	status: string;
+	errors: string[] = [];
+
+	/**
 	 * expansion status
 	 */
-	expansions: any[] = Array(25); // must be the same with the number of rows in a page
+	expansions: any[] = Array(25); // must be the same with the number of rows in a page (this.limit)
 	expanded: boolean = false;
 	lastSelectedColumn: number;
 	firstFetched: boolean;
@@ -84,6 +97,7 @@ export class BrowseComponent implements OnInit {
 	
 	/**
 	 * get chunk from the database 
+	 * TODO : add limit offset to the user typed query 
 	 */
 	getChunk(offset: number): void {
 		if (!this.firstFetched) this.cols = [];
@@ -91,56 +105,77 @@ export class BrowseComponent implements OnInit {
 		const dvName = this.globals.selectedDataverse;
 		const dsName = this.globals.selectedDataset;
 
-		if (!dvName || !dsName) return;
+		let query = "";
+		if (this.query){
+			// REUSE mode in query component
+			this.errors = []; 
+			this.status = undefined; 
+			query = this.query;
+		}
+		else {
+			// DEFAULT mode in browse component
+			if ((!dvName || !dsName)) return;
+			query =`
+						USE ${dvName};
+						SELECT VALUE ds FROM \`${dsName}\` ds
+						LIMIT ${this.limit * this.fetchPageNum} OFFSET ${offset};
+					`;
+		}
 
 		this.isLoading = true;
 
 		this.queryService
 			.sendQuery(
-				`
-					USE ${dvName};
-					SELECT VALUE ds FROM \`${dsName}\` ds
-					LIMIT ${this.limit * this.fetchPageNum} OFFSET ${offset};
-				`
+				query
 			)
 			.then(res => {
-				const records = JSON.parse(res).results;
-				this.allData = [];
-				this.allData = records;
+				res = JSON.parse(res);
+				if ("results" in res){
+					const records = res.results;
+					this.allData = [];
+					this.allData = records;
 
-				// look up the number/2 of rows data and build columns
-				// make maximum length columns
-				if (!this.firstFetched){
-					for (let i = 0 ; i < records.length / 2; i++){
-						const keys = Object.keys(records[i]);	
-						for (let j = 0 ; j < keys.length; j++){
-							if (!this.cols.includes(keys[j])) {
-								this.cols.push(keys[j]);	
-								this.selectedColumns.push(keys[j]);	
+					// look up the number/2 of rows data and build columns
+					// make maximum length columns
+					if (!this.firstFetched){
+						for (let i = 0 ; i < records.length / 2; i++){
+							const keys = Object.keys(records[i]);	
+							for (let j = 0 ; j < keys.length; j++){
+								if (!this.cols.includes(keys[j])) {
+									this.cols.push(keys[j]);	
+									this.selectedColumns.push(keys[j]);	
+								}
 							}
 						}
 					}
-				}
-				// make empty key (null value) for nullable data 
-				for (let i = 0 ; i < this.allData.length; i++){
-					for (let j = 0 ; j < this.cols.length; j++){
-						if (!(this.cols[j] in this.allData[i])){
-							this.allData[i][this.cols[j]] = "";	
-						}
-					}	
+					// make empty key (null value) for nullable data 
+					for (let i = 0 ; i < this.allData.length; i++){
+						for (let j = 0 ; j < this.cols.length; j++){
+							if (!(this.cols[j] in this.allData[i])){
+								this.allData[i][this.cols[j]] = "";	
+							}
+						}	
+					}
+
+					// data for the first page
+					this.getPageData(1);
+					
+					// generate page number
+					this.pages = [];
+					for (let i = 0 ; i < this.fetchPageNum; i++){
+						this.pages.push(i + 1 + ((this.chunkNum-1) * this.fetchPageNum));
+					}
+
+					// use this flag to make columns only when we get the first chunk
+					if (!this.firstFetched) this.firstFetched = true;
 				}
 
-				// data for the first page
-				this.data = this.allData.slice(0, this.limit);
-				
-				// generate page number
-				this.pages = [];
-				for (let i = 0 ; i < this.fetchPageNum; i++){
-					this.pages.push(i + 1 + ((this.chunkNum-1) * this.fetchPageNum));
+				if ("errors" in res){
+					for (let i = 0; i < res["errors"].length; i++)
+						this.errors.push(res["errors"][i]["msg"]);
 				}
-
-				// use this flag to make columns only when we get the first chunk
-				if (!this.firstFetched) this.firstFetched = true;
+				this.execution_time = res.metrics.executionTime;
+				this.status = res.status;
 
 				this.isLoading = false;
 			});
@@ -227,12 +262,26 @@ export class BrowseComponent implements OnInit {
 		}
 	}
 
+	updateBrowseComponent(dvName: any, dsNames: any){
+		this.cols = [];
+		this.selectedColumns = [];
+		this.offset = 0;
+		this.firstFetched = false;
+		this.getChunk(this.offset);
+		this.globals.buildSpecialCasePairs(dvName, dsNames);
+	}
+
   /**
 	 * call getChunk() when this component loaded
 	 */
 	ngOnInit(): void {
-		this.firstFetched = false;
-		this.getChunk(this.offset);
-		this.globals.buildSpecialCasePairs(this.globals.selectedDataverse, [this.globals.selectedDataset]);
+		if (!this.isReused){
+			this.cols = [];
+			this.selectedColumns = [];
+			this.offset = 0;
+			this.firstFetched = false;
+			this.getChunk(this.offset);
+			this.globals.buildSpecialCasePairs(this.globals.selectedDataverse, [this.globals.selectedDataset]);
+		}
 	}
 }

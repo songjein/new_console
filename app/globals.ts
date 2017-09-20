@@ -51,18 +51,23 @@ export class Globals{
 	){}
 	
 	/**
-	 * will be used in browse / query component
+	 * will be used in browse , query component
 	 * for processing special type ; {{}}, []
+	 * 
+	 * find selected datatype from metadata using selected dv, ds name
+	 * and call getDatatypeDetail()
+	 * 
+	 * Update variables
+	 * - this.selectedDatatype
 	 */
 	buildSpecialCasePairs(dvName: string, dsName:string[]){
 
-		// for each dsName (join query can have more than one dataset)
+		// NOTEICE: join query can have more than one dataset
 		for (let i = 0 ; i < dsName.length ; i ++){
 			// get datatype
 			this.queryService
 				.sendQuery("SELECT VALUE ds FROM Metadata.`Dataset` ds;")
 				.then(res => {
-
 					const results = JSON.parse(res).results;
 					for (let j = 0; j < results.length; j++ ) {
 						const _dvName = results[j]["DataverseName"];
@@ -78,6 +83,21 @@ export class Globals{
 		}
 	}	
 
+	/**
+	 * Params: dvName, dsName
+	 * 
+	 * called from buildSpecialCasePairs()
+	 * 
+	 * get metadata for datatype
+	 * get the fields information from it
+	 * find special case ({{}}, [])
+	 * 
+	 * Update variables
+	 * - this.MetadataDatatype
+	 * 
+	 * call processSpecialCase(specialCaseList, dvName, dsName)
+	 * 
+	 */
 	getDatatypeDetail(dvName: string, dsName: string){
 
 		this.queryService
@@ -111,6 +131,19 @@ export class Globals{
 		});
 	}
 
+	/**
+	 * Params: specialCaseList, dvName, dsName
+	 *
+	 * called from getDatatypeDetail()
+	 * find whether each special case's field name is orderedlist or unorderedlist
+	 * 
+	 * updated variables
+	 * - this.specialCaseParis 
+	 * 
+	 * ex) *ngIf="d[k] && (globals.specialCasePairs | keys).includes(k)"
+	 * ex) *ngIf="globals.specialCasePairs[k] == 'UNORDEREDLIST'" 
+	 * 
+	 */
 	processSpecialCase(specialCaseList: any[], dvName: string, dsName: string){
 		this.specialCasePairs = {};
 
@@ -150,6 +183,10 @@ export class Globals{
 
 	/**
 	 * get all dataverses in the database
+	 * call getDatasets()
+	 * 
+	 * Update variables
+	 * - this.sidebarItems
 	 */
 	getDataverse(): void {
 		this.sidebarItems = [];
@@ -201,6 +238,11 @@ export class Globals{
 
 	/**
 	 * get all datasets in the dataverse 
+	 *
+	 * Update variables
+	 * - this.selectedDataverse
+	 * - this.selectedDataset
+	 * - this.sidebarItems
 	 */
 	getDataset(): void {
 		this.queryService

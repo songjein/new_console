@@ -36,6 +36,8 @@ import { Globals } from './globals';
 
 export class QueryComponent implements OnInit {
 
+	@ViewChild(BrowseComponent) child;
+
 	/**
 	 * view type
 	 */
@@ -214,12 +216,16 @@ export class QueryComponent implements OnInit {
 	 * if click 'send query'
 	 */
 	sendQuery(){
-		this.getQueryResult(this.query.replace(/\n/g, " "));
+		//this.getQueryResult(this.query.replace(/\n/g, " "));
+
 		this.addQueryHistory(this.query);
 		this.qhCursor = this.queryHistory.length;
-		
+
 		const dvds = this.extractDvDsName(this.query);
-		this.globals.buildSpecialCasePairs(dvds.dvName, dvds.dsNames);
+		this.child.updateBrowseComponent(dvds.dvName, dvds.dsNames);
+		
+		//const dvds = this.extractDvDsName(this.query);
+		//this.globals.buildSpecialCasePairs(dvds.dvName, dvds.dsNames);
 	}
 	
 	extractDvDsName(query: string){
@@ -247,8 +253,6 @@ export class QueryComponent implements OnInit {
 				dsNames.push(items[i + 1].trim());
 			}
 		} 
-
-		console.log ("Special : ", this.globals.specialCasePairs);
 
 		return {dvName: dvName, dsNames: dsNames};
 	}
