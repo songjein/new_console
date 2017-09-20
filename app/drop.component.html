@@ -1,0 +1,74 @@
+<p-panel>
+	<p-header>
+		<div class="ui-helper-clearfix" style="display: inline; text-align: left;">
+			<span class="ui-panel-title">Drop Dataverse / Dataset / Datatype</span>
+		</div>
+	</p-header>
+
+	<div style="min-height: 250px;">
+
+		<h3>Dataverse </h3>
+		<p-dropdown [options]="dataverses" [(ngModel)]="selectedDV" [style]="{'width': '200px'}" [scrollHeight]="100" [filter]="true" (onChange)="getDsDt()"></p-dropdown>
+		<div style="height: 10px;"></div>
+		<button pButton type="button" (click)="dropConfirm('dataverse')" label="Drop Dataverse"></button>
+
+		<!-- confirm div for dataverse -->
+		<div *ngIf="dropType && dropType == 'dataverse'" style="background:rgb(240, 240, 240);">
+			<h4>Drop Dataverse <span style="color:red">{{ selectedDV }}</span></h4>
+			<input type="text" pInputText placeholder="Type the dataverse name" [(ngModel)]="dropNameConfirm">
+			<button pButton type="button" (click)="drop('dataverse')" label="Drop"></button>
+		</div>
+		
+		<div style="height: 10px;"></div>
+
+		<div *ngIf="selectedDV && datasets.length > 0" >
+			<h3>Dataset</h3>
+			<p-listbox *ngIf="datasets" [options]="datasets" [(ngModel)]="selectedDS" [style]="{'width':'200px'}"></p-listbox>
+			<div style="height: 10px;"></div>
+			<button pButton type="button" (click)="dropConfirm('dataset')" label="Drop Dataset"></button>
+			<!-- confirm div for dataset -->
+			<div *ngIf="dropType && dropType == 'dataset'" style="background:rgb(240, 240, 240);">
+				<h4>Drop Dataset <span style="color:red">{{ selectedDS }}</span></h4>
+				<input type="text" pInputText placeholder="Type the dataset name" [(ngModel)]="dropNameConfirm">
+				<button pButton type="button" (click)="drop('dataset')" label="Drop"></button>
+			</div>
+		</div>
+
+		<div *ngIf="selectedDV && datatypes.length > 0">
+			<h3>Datatype</h3>
+			<p-listbox *ngIf="datatypes" [options]="datatypes" [(ngModel)]="selectedDT" [style]="{'width':'200px'}"></p-listbox>
+			<div style="height: 10px;"></div>
+			<button pButton type="button" (click)="dropConfirm('datatype')" label="Drop Datatype"></button>
+			<!-- confirm div for datatype-->
+			<div *ngIf="dropType && dropType == 'datatype'" style="background:rgb(240, 240, 240);">
+				<h4>Drop Datatype <span style="color:red">{{ selectedDT }}</span></h4>
+				<input type="text" pInputText placeholder="Type the datatype name" [(ngModel)]="dropNameConfirm">
+				<button pButton type="button" (click)="drop('datatype')" label="Drop"></button>
+			</div>
+		</div>
+	</div>
+</p-panel>
+
+<div style="height: 10px;"></div>
+<div style="height: 10px;"></div>
+
+<!-- Query Status -->
+<p-panel *ngIf="status" id="query-status">
+	<p-header>
+		<div class="ui-helper-clearfix" style="text-align: left;">
+			<span class="ui-panel-title">Query Result</span>
+		</div>
+	</p-header>
+
+	<div *ngIf='status == "success"' id="qs-success">
+		Status: <span class="qs-txt">{{status}}</span>
+	</div>
+	<div *ngIf='status != "success"' id="qs-fail">
+		Status: <span class="qs-txt">{{status}}</span>
+	</div>
+
+	<div *ngIf="execution_time" id="qs-time">
+		Execution Time: <span class="qs-txt">{{execution_time}}</span>
+	</div>
+</p-panel>
+<!-- Query Status END -->

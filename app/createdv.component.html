@@ -1,0 +1,35 @@
+<p-panel>
+	<p-header>
+		<div class="ui-helper-clearfix" style="display: inline; text-align: left;">
+			<span class="ui-panel-title">Create new dataverse</span>
+		</div>
+	</p-header>
+
+	<input type="text" pInputText placeholder="Dataverse name" [(ngModel)]="newDvName">
+
+	<button pButton type="button" (click)="createDataverse()" label="Create"></button>
+</p-panel>
+
+<div style="height: 10px;"></div>
+<div style="height: 10px;"></div>
+
+<!-- Query Status -->
+<p-panel *ngIf="status" id="query-status">
+	<p-header>
+		<div class="ui-helper-clearfix" style="text-align: left;">
+			<span class="ui-panel-title">Query Result</span>
+		</div>
+	</p-header>
+
+	<div *ngIf='status == "success"' id="qs-success">
+		Status: <span class="qs-txt">{{status}}</span>
+	</div>
+	<div *ngIf='status != "success"' id="qs-fail">
+		Status: <span class="qs-txt">{{status}}</span>
+	</div>
+
+	<div *ngIf="execution_time" id="qs-time">
+		Execution Time: <span class="qs-txt">{{execution_time}}</span>
+	</div>
+</p-panel>
+<!-- Query Status END -->

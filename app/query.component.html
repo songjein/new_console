@@ -63,11 +63,11 @@
 
 
 		<div *ngIf="errors.length > 0" id="qs-error" >
-			ErrorMessage : <span class="qs-txt" *ngFor="let msg of errors">{{ msg }}</span>
+			Error Message : <span class="qs-txt" *ngFor="let msg of errors">{{ msg }}</span>
 		</div>
 
 		<div *ngIf="execution_time" id="qs-time">
-			ExecutionTime : <span class="qs-txt">{{ execution_time }}</span>
+			Execution Time : <span class="qs-txt">{{ execution_time }}</span>
 		</div>
 
 		<div *ngIf="data.length" id="qs-count">

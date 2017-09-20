@@ -1,0 +1,56 @@
+<p-panel>
+	<p-header>
+		<div class="ui-helper-clearfix" style="display: inline; text-align: left;">
+			<span class="ui-panel-title">Create new dataset in <b>{{globals.selectedDataverse}}</b></span>
+		</div>
+	</p-header>
+
+	<div style="min-height: 250px;">
+		<input type="text" pInputText placeholder="Dataset name" [(ngModel)]="newDsName">
+
+		<div style="height:10px"></div>
+
+		<p-dropdown [options]="datatypes" [scrollHeight]="100" [filter]="true" [(ngModel)]="selectedDatatype" [style]="{'width': '200px'}"></p-dropdown>
+		<button pButton type="button" (click)="addDatatype()" label="Add Datatype"></button>
+		
+		<div style="height:10px"></div>
+
+		<span *ngIf="selectedDatatype">Primary Key</span>
+
+		<p-listbox *ngIf="selectedDatatype" [options]="selectedDatatype.fields" [(ngModel)]="selectedKey" [style]="{'width':'200px'}">
+			<template let-field pTemplate="item">
+				<div class="ui-helper-clearfix" style="position: relative;">
+					<span>{{field.name}}</span> (<span style="color: red;">{{field.type}}</span>)
+				</div>
+			</template>
+		</p-listbox>
+
+		<div style="height:10px"></div>
+
+		<button pButton type="button" (click)="createDataset()" label="Create"></button>
+	</div>
+</p-panel>
+
+<div style="height: 10px;"></div>
+<div style="height: 10px;"></div>
+
+<!-- Query Status -->
+<p-panel *ngIf="status" id="query-status">
+	<p-header>
+		<div class="ui-helper-clearfix" style="text-align: left;">
+			<span class="ui-panel-title">Query Result</span>
+		</div>
+	</p-header>
+
+	<div *ngIf='status == "success"' id="qs-success">
+		Status: <span class="qs-txt">{{status}}</span>
+	</div>
+	<div *ngIf='status != "success"' id="qs-fail">
+		Status: <span class="qs-txt">{{status}}</span>
+	</div>
+
+	<div *ngIf="execution_time" id="qs-time">
+		Execution Time: <span class="qs-txt">{{execution_time}}</span>
+	</div>
+</p-panel>
+<!-- Query Status END -->

@@ -76,6 +76,14 @@ export class TabMenuComponent implements OnInit, OnDestroy {
 				command: (e) => {
 					this.globals.selectedTab = "query"
 				}
+			},
+			{ 
+				label: 'Drop', 
+				icon: 'fa-trash-o',
+				routerLink: ['/proxy/drop'],
+				command: (e) => {
+					this.globals.selectedTab = "drop"
+				}
 			}
 		];
 

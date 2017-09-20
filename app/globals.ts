@@ -18,6 +18,10 @@
  */
 import { Injectable, Inject, forwardRef } from '@angular/core';
 
+import { Router } from '@angular/router';
+
+import { MenuItem } from 'primeng/primeng';
+
 import { QueryService } from './query.service';
 
 /**
@@ -36,9 +40,14 @@ export class Globals{
 
 	selectedTab: string;
 
+	// sidebar items
+	sidebarItems: MenuItem[] = [];
+
 	constructor(
 		@Inject(forwardRef(() => QueryService))	
-		private queryService: QueryService
+		private queryService: QueryService,
+		@Inject(forwardRef(() => Router))	
+		private router : Router 
 	){}
 	
 	/**
@@ -124,4 +133,111 @@ export class Globals{
 		}
 		// for let i end
 	}
+
+
+
+	/*
+	 * NOTICE : getDataverse() and getDataset() 
+	 * were originally in the sidebar components..
+	 * but, moved to globals.ts 
+	 * because many components need to access those functions
+	 * TODO: function to add one item 
+	 **/
+
+	updateSidebar(){
+		this.getDataverse();
+	}
+
+	/**
+	 * get all dataverses in the database
+	 */
+	getDataverse(): void {
+		this.sidebarItems = [];
+
+		this.queryService
+			.sendQuery("SELECT VALUE dv FROM Metadata.`Dataverse` dv;")
+			.then(res => {
+				// parse response body
+				const dv = JSON.parse(res).results;
+
+				// Add 'New' to connect to page for adding new dataverse
+				this.sidebarItems.push(
+					{
+						label: 'New',
+						icon:'fa-plus',
+						command: (e) => {
+							this.router.navigate(['/proxy/createdv']);
+						}
+					}
+				);
+
+				for (var i = 0; i < dv.length; i++){
+					if (dv[i]["DataverseName"] == "Default") continue;
+					this.sidebarItems.push(
+						{ 
+							label: dv[i]["DataverseName"], 
+							icon: '', 
+							items: [
+									{
+										label: 'New',
+										icon: 'fa-plus-square-o',
+										command: (e) => {
+											this.router.navigate(['/proxy/createds']);
+										}
+									}
+								],
+							command: (e) => {
+								this.selectedDataset = null;
+								this.selectedDataverse = e.item.label;	
+							}
+						}
+					);
+				}
+
+				// call getDataset() after getting the dataverses 
+				this.getDataset(); 
+			});
+	}
+
+	/**
+	 * get all datasets in the dataverse 
+	 */
+	getDataset(): void {
+		this.queryService
+			.sendQuery("SELECT VALUE ds FROM Metadata.`Dataset` ds;")
+			.then(res => {
+				// parse response body
+				const ds = JSON.parse(res).results;
+				for (var i = 0; i < ds.length; i++){
+					const dvName = ds[i]["DataverseName"];
+					const dsName = ds[i]["DatasetName"];
+
+					const idx = this.sidebarItems.findIndex(x => x["label"] == dvName);
+
+					this.sidebarItems[idx]["items"].push(
+						{ 
+							label: dsName, 
+							icon: '', 
+							command: (e) => {
+								this.selectedDataverse = dvName;	
+								this.selectedDataset = e.item.label;
+
+								// navigate through the proxy component
+								// for the component in router-outlet refreshing
+								// /proxy/:routed-component
+								if (this.selectedTab == "browse")
+									this.router.navigate(['/proxy/browse']);
+								else if (this.selectedTab == "datatype")
+									this.router.navigate(['/proxy/datatype']);
+								else
+									this.router.navigate(['/proxy/browse']);
+							}
+						}
+					);
+				}
+
+			});
+	}
+
+
 }

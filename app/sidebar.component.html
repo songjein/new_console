@@ -16,6 +16,6 @@
  ! specific language governing permissions and limitations
  ! under the License.
  !-->
-<p-panelMenu [model]="items" [style]="{'width':'100%'}"></p-panelMenu>
+<p-panelMenu [model]="globals.sidebarItems" [style]="{'width':'100%'}"></p-panelMenu>
 
-<span *ngIf="items.length == 0">Loading dataverse...</span>
+<span *ngIf="globals.sidebarItems.length == 0">Loading dataverse...</span>

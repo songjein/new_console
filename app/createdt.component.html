@@ -1,0 +1,79 @@
+<p-panel>
+	<p-header>
+		<div class="ui-helper-clearfix" style="display: inline; text-align: left;">
+			<span class="ui-panel-title">Create new datatype</span>
+		</div>
+	</p-header>
+
+	<div style="min-height: 250px;">
+		<input type="text" pInputText placeholder="Datatype name" [(ngModel)]="newDtName">
+
+		<div style="height: 10px;"></div>
+
+		<p-radioButton name="type" value="closed" label="Closed" [(ngModel)]="openOrClosed"></p-radioButton>&nbsp;
+		<p-radioButton name="type" value="open" label="Open" [(ngModel)]="openOrClosed"></p-radioButton>
+
+		<div style="height: 10px;"></div>
+
+		<table border="1" style="border-collapse:collapse;">
+			<tr>
+				<th>Field Name</th>
+				<th>Field Type</th>
+				<th>Is Nullable?</th>
+				<th></th>
+			</tr>
+			<tr *ngFor="let f of fields; let i = index">
+				<td>
+					<input type="text" pInputText placeholder="Field Name" [(ngModel)]="fields[i].name">
+				</td>
+				<td>
+					<p-dropdown [options]="fieldtypes" [(ngModel)]="fields[i].type" [style]="{'width': '200px'}" [filter]="true" [scrollHeight]="100"></p-dropdown>
+					<p-dropdown [options]="metas" [(ngModel)]="fields[i].meta"></p-dropdown>
+				</td>
+				<td style="text-align:center">
+					<p-checkbox [(ngModel)]="fields[i].isNullable" binary="true"></p-checkbox>
+				</td>
+				<td>
+					<span (click)="removeField(i)" style="cursor:pointer;"><i class="fa fa-trash-o" aria-hidden="true"></i></span>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4" style="text-align:center; " >
+					<span (click)="addField()" style="cursor:pointer;"><i class="fa fa-plus-circle" aria-hidden="true"></i></span>
+				</td>
+			</tr>
+		</table>
+
+		<div style="height: 10px;"></div>
+
+		<button pButton type="button" (click)="setQuery()" label="Preview"></button>
+
+		<button pButton type="button" (click)="createDatatype()" label="Create"></button>
+
+		<pre style="background:rgb(240,240,240)">{{ query }}</pre>
+	</div>
+</p-panel>
+
+<div style="height: 10px;"></div>
+<div style="height: 10px;"></div>
+
+<!-- Query Status -->
+<p-panel *ngIf="status" id="query-status">
+	<p-header>
+		<div class="ui-helper-clearfix" style="text-align: left;">
+			<span class="ui-panel-title">Query Result</span>
+		</div>
+	</p-header>
+
+	<div *ngIf='status == "success"' id="qs-success">
+		Status: <span class="qs-txt">{{status}}</span>
+	</div>
+	<div *ngIf='status != "success"' id="qs-fail">
+		Status: <span class="qs-txt">{{status}}</span>
+	</div>
+
+	<div *ngIf="execution_time" id="qs-time">
+		Execution Time: <span class="qs-txt">{{execution_time}}</span>
+	</div>
+</p-panel>
+<!-- Query Status END -->

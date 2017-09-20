@@ -1,0 +1,25 @@
+#query-status {
+	background-color: #EAEAEA;
+	display: inline;
+	text-align: center;
+}
+
+#qs-success, #qs-fail, #qs-time, #qs-count {
+	width: 48%;
+	text-align: center;
+	display: inline-block;
+	box-sizing: border-box;
+	position: relative;
+}
+
+#qs-success {
+	border: 1px solid #6B66FF;
+}
+
+#qs-fail {
+	border: 1px solid #FF0000;
+}
+
+.qs-txt {
+	color: red;
+}

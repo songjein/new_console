@@ -34,6 +34,9 @@ import {
 	CheckboxModule,
 	SelectButtonModule,	
 	PanelModule,
+	InputTextModule,
+	DropdownModule,
+	ListboxModule,
 } from 'primeng/primeng';
 
 import { CodemirrorComponent } from './codemirror.component';
@@ -50,6 +53,10 @@ import { BrowseComponent } 	 from './browse.component';
 import { QueryComponent } 	 from './query.component'; 
 import { DatatypeComponent } 	 from './datatype.component'; 
 import { ProxyComponent } 	 from './proxy.component';
+import { CreateDVComponent }			 from './createdv.component';
+import { CreateDSComponent }			 from './createds.component';
+import { CreateDTComponent }			 from './createdt.component';
+import { DropComponent }			 from './drop.component';
 
 import { QueryService } from './query.service';
 
@@ -76,6 +83,9 @@ import { ObjectArrayTypePipe } from './objectarraytype.pipe';
 		CheckboxModule,
 		SelectButtonModule,	
 		PanelModule,
+		InputTextModule,
+		DropdownModule,
+		ListboxModule,
 	],
 
   declarations: [
@@ -91,6 +101,10 @@ import { ObjectArrayTypePipe } from './objectarraytype.pipe';
 		KeysPipe,
 		ObjectTypePipe,
 		ObjectArrayTypePipe,
+		CreateDVComponent,
+		CreateDSComponent,
+		CreateDTComponent,
+		DropComponent,
 	],
 
 	/**

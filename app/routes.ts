@@ -22,6 +22,10 @@ import { BrowseComponent } from './browse.component';
 import { QueryComponent } from './query.component';
 import { DatatypeComponent } from './datatype.component';
 import { ProxyComponent } from './proxy.component';
+import { CreateDVComponent }   from './createdv.component';
+import { CreateDSComponent }   from './createds.component';
+import { CreateDTComponent }   from './createdt.component';
+import { DropComponent }   from './drop.component';
 
 /**
  * Define routing information between components
@@ -31,7 +35,11 @@ export const routes: Route[] = [
 	{ path: 'proxy/:target', component: ProxyComponent},
 	{ path: 'browse', component: BrowseComponent },
 	{ path: 'datatype', component: DatatypeComponent },
-	{ path: 'query', component: QueryComponent }
+	{ path: 'query', component: QueryComponent },
+	{ path: 'createdv', component: CreateDVComponent },
+	{ path: 'createds', component: CreateDSComponent },
+	{ path: 'createdt', component: CreateDTComponent },
+	{ path: 'drop', component: DropComponent },
 ];
 
 export const routing = RouterModule.forRoot(routes, { useHash: true });
