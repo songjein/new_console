@@ -42,39 +42,4 @@
 <div style="height:10px;"></div>
 
 <!-- Query Result-->
-<!-- TODO: remove redundancy with browse.componen.html -->
-<p-panel *ngIf="data && data.length > 0">
-	<p-header>
-		<div class="ui-helper-clearfix">
-			<span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:2px">Query Status</span>
-			<p-selectButton [style]="{'float':'right'}" [options]="types" [(ngModel)]="selectedType"></p-selectButton>
-		</div>
-	</p-header>
-
-	<!-- Query Status -->
-	<div *ngIf="status" id="query-status" >
-
-		<div *ngIf='status == "success"' id="qs-success">
-			Status: <span class="qs-txt">{{status}}</span>
-		</div>
-		<div *ngIf='status != "success"' id="qs-fail">
-			Status: <span class="qs-txt">{{status}}</span>
-		</div>
-
-
-		<div *ngIf="errors.length > 0" id="qs-error" >
-			Error Message : <span class="qs-txt" *ngFor="let msg of errors">{{ msg }}</span>
-		</div>
-
-		<div *ngIf="execution_time" id="qs-time">
-			Execution Time : <span class="qs-txt">{{ execution_time }}</span>
-		</div>
-
-		<div *ngIf="data.length" id="qs-count">
-			Result Count: <span class="qs-txt">{{data.length}}</span>
-		</div>
-	</div>
-	<!-- Query Status End -->
-</p-panel>
-
 <browse-tab [query]="query" [isReused]="true"></browse-tab>
