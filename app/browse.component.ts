@@ -158,12 +158,12 @@ export class BrowseComponent implements OnInit {
 						}	
 					}
 
-					// data for the first page
-					this.getPageData(1);
+					// data for the first page in the chunk
+					this.getPageData(1 + (this.chunkNum - 1) * 10);
 					
 					// generate page number
 					this.pages = [];
-					for (let i = 0 ; i < this.fetchPageNum; i++){
+					for (let i = 0 ; i < this.allData.length / this.limit; i++){
 						this.pages.push(i + 1 + ((this.chunkNum-1) * this.fetchPageNum));
 					}
 
