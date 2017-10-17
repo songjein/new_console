@@ -75,11 +75,14 @@
 		<!-- column filter -->
 		<div *ngIf="cols.length > 0">
 			<span style="font-weight:bold">Column filter :</span><br>
+			<p-multiSelect [options]="colsfilter" [(ngModel)]="selectedColumns" showToggleAll="true"></p-multiSelect>
+			<!--
 			<span *ngFor="let col of cols; let i=index" >
 				<span style="white-space: nowrap;">
 					[<p-checkbox name="columnfilter" value="{{col}}" label="{{col}}" [(ngModel)]="selectedColumns"></p-checkbox>]	
 				</span>
 			</span>
+			-->
 		</div>
 
 		<div style="height:10px;"></div>
@@ -101,6 +104,11 @@
 							<i class="fa fa-spinner fa-pulse fa-1x fa-fw" aria-hidden="true"></i>
 						</div>
 					</div>
+
+					<!-- limit option -->
+					<div *ngIf="!isReused" class="limit-opt">
+						<p-dropdown [options]="limits" [(ngModel)]="limit" (onChange)="onChangeLimit()"></p-dropdown>			
+					</div>
 				</td>
 			</tr>
 			<tr>
@@ -113,28 +121,28 @@
 			</tr>
 			<template ngFor let-d [ngForOf]="data" let-r="index" >
 				<tr class="row">
-					<td *ngFor="let k of selectedColumns; let c=index" (click)="expandCell(r,c)" class="align-center">
+					<td *ngFor="let col of selectedColumns; let c=index" (click)="expandCell(r,c)" class="align-center" [class.selectedColumn]="col == clickedColumn">
 						<!-- nested data-->
-						<span *ngIf="d[k] | isObject" class="tooltip">
+						<span *ngIf="d[col] | isObject" class="tooltip">
 							<span class="tooltip-txt">Nested Data</span>
 							<b>{{"{"}} + {{"}"}}</b>
 						</span>
 						<!-- array of nested data / primitives -->
-						<span *ngIf="d[k] && (globals.specialCasePairs | keys).includes(k)">
-							<span *ngIf="globals.specialCasePairs[k] == 'UNORDEREDLIST'" class="tooltip"> 
+						<span *ngIf="d[col] && (globals.specialCasePairs | keys).includes(col)">
+							<span *ngIf="globals.specialCasePairs[col] == 'UNORDEREDLIST'" class="tooltip"> 
 								<span class="tooltip-txt">Unordered List</span>
-								<b *ngIf="d[k][0] | isObject">{{"{"}}{{"{"}} + {{"}"}}{{"}"}}</b>
-								<b *ngIf="!(d[k][0] | isObject)">{{"{"}}{{"{"}} {{d[k] | attachQmark}} {{"}"}}{{"}"}}</b>
+								<b *ngIf="d[col][0] | isObject">{{"{"}}{{"{"}} + {{"}"}}{{"}"}}</b>
+								<b *ngIf="!(d[col][0] | isObject)">{{"{"}}{{"{"}} {{d[col] | attachQmark}} {{"}"}}{{"}"}}</b>
 							</span>
-							<span *ngIf="globals.specialCasePairs[k] == 'ORDEREDLIST'" class="tooltip">
+							<span *ngIf="globals.specialCasePairs[co] == 'ORDEREDLIST'" class="tooltip">
 								<span class="tooltip-txt">Ordered List</span>
-								<b *ngIf="d[k][0] | isObject">[ + ]</b>
-								<b *ngIf="!(d[k][0] | isObject)">[ {{d[k] | attachQmark}} ]</b>
+								<b *ngIf="d[col][0] | isObject">[ + ]</b>
+								<b *ngIf="!(d[col][0] | isObject)">[ {{d[col] | attachQmark}} ]</b>
 							</span>
 						</span>
 						<!-- plain data -->
-						<span *ngIf="!(d[k] | isObject) && !(globals.specialCasePairs | keys).includes(k)">
-							{{ d[k] | attachQmark }}
+						<span *ngIf="!(d[col] | isObject) && !(globals.specialCasePairs | keys).includes(col)">
+							{{ d[col] | attachQmark }}
 						</span>
 					</td>
 				</tr>

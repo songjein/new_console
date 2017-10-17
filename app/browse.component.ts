@@ -53,6 +53,7 @@ export class BrowseComponent implements OnInit {
 	allData: any[];
 	data: any[];
 	cols: any[] = [];
+	colsfilters: SelectItem[] = [];
 
 	/**
 	 * column filter checkbox
@@ -80,6 +81,7 @@ export class BrowseComponent implements OnInit {
 	 */
 	offset: number = 0;
 	limit: number = 25; // maximum rows in one page
+	limits: SelectItem[]; // List for limit option
 	fetchPageNum: number = 10; // size of fetching data = limit * fetchPageNum
 	currentPageNum: number = 1;
 	pages: number[] = [];
@@ -94,6 +96,11 @@ export class BrowseComponent implements OnInit {
 		this.types.push({label: "Table", value: "Table"});
 		this.types.push({label: "JSON", value: "JSON"});
 		this.types.push({label: "Tree", value: "Tree"});
+
+		this.limits = [];
+		this.limits.push({label: "25", value: 25});
+		this.limits.push({label: "50", value: 50});
+		this.limits.push({label: "100", value: 100});
 	}
 	
 	/**
@@ -135,6 +142,9 @@ export class BrowseComponent implements OnInit {
 					const records = res.results;
 					this.allData = [];
 					this.allData = records;
+					
+					// Columns filter
+					this.colsfilter = [];
 
 					// look up the number/2 of rows data and build columns
 					// make maximum length columns
@@ -145,6 +155,8 @@ export class BrowseComponent implements OnInit {
 								if (!this.cols.includes(keys[j])) {
 									this.cols.push(keys[j]);	
 									this.selectedColumns.push(keys[j]);	
+
+									this.colsfilter.push({label: keys[j], value: keys[j]});
 								}
 							}
 						}
@@ -277,17 +289,16 @@ export class BrowseComponent implements OnInit {
 		this.globals.buildSpecialCasePairs(dvName, dsNames);
 	}
 
+	onChangeLimit() {
+		this.updateBrowseComponent(this.globals.selectedDataverse, [this.globals.selectedDataset]);
+	}
+
   /**
 	 * call getChunk() when this component loaded
 	 */
 	ngOnInit(): void {
 		if (!this.isReused){
-			this.cols = [];
-			this.selectedColumns = [];
-			this.offset = 0;
-			this.firstFetched = false;
-			this.getChunk(this.offset);
-			this.globals.buildSpecialCasePairs(this.globals.selectedDataverse, [this.globals.selectedDataset]);
+			this.updateBrowseComponent(this.globals.selectedDataverse, [this.globals.selectedDataset]);
 		}
 	}
 }

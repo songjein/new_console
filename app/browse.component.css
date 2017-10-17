@@ -43,6 +43,13 @@
 	visibility: visible;
 }
 
+/* Tooltip end */
+
+/* Limit option */
+.limit-opt {
+	float: right;
+}
+
 #browse-container{
 	width: 100%; height: 700px; overflow-x:auto;
 }
@@ -146,6 +153,10 @@ table {
 	width: 800px;
 }
 
-.selectedColumn{
+th.selectedColumn{
 	background: orange;	
 }
+td.selectedColumn{
+	background: rgba(255, 228, 0, 0.2);	
+}
+

@@ -37,6 +37,7 @@ import {
 	InputTextModule,
 	DropdownModule,
 	ListboxModule,
+	MultiSelectModule,
 } from 'primeng/primeng';
 
 import { CodemirrorComponent } from './codemirror.component';
@@ -87,6 +88,7 @@ import { AttachQMarkPipe } from './attachQMark.pipe';
 		InputTextModule,
 		DropdownModule,
 		ListboxModule,
+		MultiSelectModule,
 	],
 
   declarations: [
